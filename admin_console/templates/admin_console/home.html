@@ -1,0 +1,79 @@
+{% extends "admin_console/base.html" %}
+{% load humanize %}
+{% block title %}Console — {{ site_settings.site_name }}{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>Welcome, {{ request.user.first_name|default:request.user.username }}</h1>
+  <p>{% if current_cycle %}Current cycle: <strong>{{ current_cycle.session }}</strong> — ₦{{ current_cycle.fee|floatformat:2|intcomma }} fee{% else %}No admission cycle is currently active{% endif %}</p></div>
+</div>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-top"><div class="stat-card-icon green"><i class="fa-solid fa-file-signature"></i></div></div>
+    <strong>{{ total_applications }}</strong><span class="stat-label">Submitted Applications</span>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-top"><div class="stat-card-icon gold"><i class="fa-solid fa-hourglass-half"></i></div></div>
+    <strong>{{ pending_review }}</strong><span class="stat-label">Pending Review</span>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-top"><div class="stat-card-icon blue"><i class="fa-solid fa-sack-dollar"></i></div></div>
+    <strong>₦{{ revenue|floatformat:2|intcomma }}</strong><span class="stat-label">Application Fees Collected</span>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-top"><div class="stat-card-icon red"><i class="fa-solid fa-envelope"></i></div></div>
+    <strong>{{ unread_messages }}</strong><span class="stat-label">Unread Contact Messages</span>
+  </div>
+</div>
+
+<div class="p-grid-2">
+  <div class="panel">
+    <div class="panel-head"><h3>Recent Applications</h3><a href="{% url 'admin_console:applications_list' %}">View all</a></div>
+    {% for app in recent_applications %}
+    <div class="list-row">
+      <div class="list-row-time">{{ app.submitted_at|date:"d M" }}</div>
+      <div class="list-row-body">
+        <strong>{{ app.full_name|default:app.applicant.email }}</strong>
+        <span>{{ app.application_number }} — {{ app.programme.name|default:"No programme" }}</span>
+      </div>
+      <span class="badge {{ app.status_badge_class }}">{{ app.get_status_display }}</span>
+    </div>
+    {% empty %}
+    <p style="color:var(--muted);font-size:13.5px;">No applications submitted yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Recent Contact Messages</h3><a href="{% url 'admin_console:list' 'contact-messages' %}">View all</a></div>
+    {% for msg in recent_messages %}
+    <div class="list-row">
+      <div class="list-row-time">{{ msg.submitted_at|date:"d M" }}</div>
+      <div class="list-row-body">
+        <strong>{{ msg.name }}</strong>
+        <span>{{ msg.subject }}</span>
+      </div>
+      {% if not msg.is_read %}<span class="badge badge-warning">New</span>{% endif %}
+    </div>
+    {% empty %}
+    <p style="color:var(--muted);font-size:13.5px;">No messages yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% for category, entries in categories.items %}
+<div class="panel">
+  <div class="panel-head"><h3>{{ category }}</h3></div>
+  <div class="stat-cards" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+    {% for entry, count in entries %}
+    <a href="{% url 'admin_console:list' entry.slug %}" class="stat-card" style="text-decoration:none;">
+      <div class="stat-card-top"><div class="stat-card-icon green"><i class="{{ entry.icon }}"></i></div></div>
+      <strong style="font-size:15px;">{{ entry.label }}</strong>
+      <span class="stat-label">{{ count }} record{{ count|pluralize }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Documents — Student Portal{% endblock %}
+{% block page_title %}Documents{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Documents</h1><p>Documents submitted with your admission application.</p></div></div>
+<div class="doc-grid">
+  {% if application %}
+    <div class="doc-card">
+      <div class="doc-icon"><i class="fa-solid fa-id-badge"></i></div>
+      <h4>Passport Photo</h4>
+      {% if application.passport_photo %}<div class="doc-actions"><a href="{{ application.passport_photo.url }}" target="_blank" class="btn btn-outline btn-sm">View</a><a href="{{ application.passport_photo.url }}" target="_blank" class="btn btn-primary btn-sm">Download</a></div>{% else %}<span style="font-size:12px;color:var(--muted);">Not on file</span>{% endif %}
+    </div>
+    <div class="doc-card">
+      <div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div>
+      <h4>O'Level Result</h4>
+      {% if application.olevel_result %}<div class="doc-actions"><a href="{{ application.olevel_result.url }}" target="_blank" class="btn btn-outline btn-sm">View</a><a href="{{ application.olevel_result.url }}" target="_blank" class="btn btn-primary btn-sm">Download</a></div>{% else %}<span style="font-size:12px;color:var(--muted);">Not on file</span>{% endif %}
+    </div>
+    <div class="doc-card">
+      <div class="doc-icon"><i class="fa-solid fa-baby"></i></div>
+      <h4>Birth Certificate</h4>
+      {% if application.birth_certificate %}<div class="doc-actions"><a href="{{ application.birth_certificate.url }}" target="_blank" class="btn btn-outline btn-sm">View</a><a href="{{ application.birth_certificate.url }}" target="_blank" class="btn btn-primary btn-sm">Download</a></div>{% else %}<span style="font-size:12px;color:var(--muted);">Not on file</span>{% endif %}
+    </div>
+    <div class="doc-card">
+      <div class="doc-icon"><i class="fa-solid fa-address-card"></i></div>
+      <h4>Identification</h4>
+      {% if application.identification_document %}<div class="doc-actions"><a href="{{ application.identification_document.url }}" target="_blank" class="btn btn-outline btn-sm">View</a><a href="{{ application.identification_document.url }}" target="_blank" class="btn btn-primary btn-sm">Download</a></div>{% else %}<span style="font-size:12px;color:var(--muted);">Not on file</span>{% endif %}
+    </div>
+  {% else %}
+    <p style="color:var(--muted);font-size:13.5px;">No documents on file.</p>
+  {% endif %}
+</div>
+{% endblock %}

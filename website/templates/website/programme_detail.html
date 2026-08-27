@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ programme.name }} — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+      <a href="{% url 'website:programmes' %}">Programmes</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+      <span>{{ programme.name }}</span>
+    </div>
+    <h1>{{ programme.name }}</h1>
+    <p>{{ programme.get_category_display }} &middot; {{ programme.duration }} &middot; {{ programme.department.name|default:"General Studies" }}</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container about-grid">
+    <div class="about-media reveal">
+      <img src="{% if programme.image %}{{ programme.image.url }}{% else %}https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=700&q=80{% endif %}" alt="{{ programme.name }}">
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <span class="badge badge-success">{{ programme.get_category_display }}</span>
+        <span class="badge badge-info"><i class="fa-regular fa-clock"></i> {{ programme.duration }}</span>
+        <span class="badge badge-muted">{{ programme.department.name|default:"General Studies" }}</span>
+      </div>
+      <h2 style="font-size:clamp(24px,3.2vw,32px);margin-bottom:14px;">Programme Overview</h2>
+      <p style="color:var(--muted);font-size:16px;margin-bottom:24px;">{{ programme.description }}</p>
+
+      <h3 style="font-size:17px;margin-bottom:10px;">Entry Requirement</h3>
+      <p style="color:var(--muted);font-size:14.5px;margin-bottom:24px;">{{ programme.requirement }}</p>
+
+      <h3 style="font-size:17px;margin-bottom:10px;">Career Opportunities</h3>
+      <ul style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
+        {% for career in programme.career_list %}
+        <li style="font-size:14px;color:var(--text-soft);display:flex;gap:8px;"><i class="fa-solid fa-check" style="color:var(--primary);"></i>{{ career }}</li>
+        {% endfor %}
+      </ul>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{% url 'admissions:apply' %}?programme={{ programme.id }}" class="btn btn-primary btn-lg">Apply for This Programme</a>
+        <a href="{% url 'website:programmes' %}" class="btn btn-outline btn-lg">Back to Programmes</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if related_programmes %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Related</span>
+      <h2>You May Also Be Interested In</h2>
+    </div>
+    <div class="programme-grid">
+      {% for p in related_programmes %}
+      <div class="programme-card reveal">
+        <div class="programme-card-top">
+          <span class="programme-cat">{{ p.get_category_display }}</span>
+          <h3>{{ p.name }}</h3>
+          <div class="programme-meta"><span><i class="fa-regular fa-clock"></i> {{ p.duration }}</span></div>
+        </div>
+        <div class="programme-card-body">
+          <p>{{ p.description|truncatewords:18 }}</p>
+          <div class="programme-card-actions">
+            <a href="{{ p.get_absolute_url }}" class="btn btn-outline btn-sm">View Programme</a>
+            <a href="{% url 'admissions:apply' %}?programme={{ p.id }}" class="btn btn-primary btn-sm">Apply Now</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

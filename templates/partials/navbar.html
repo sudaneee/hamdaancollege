@@ -1,0 +1,55 @@
+{% load static %}
+<nav class="navbar" id="mainNavbar">
+  <div class="navbar-inner">
+    <a href="{% url 'website:home' %}" class="brand">
+      <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest">
+      <div class="brand-text">
+        <strong>{{ site_settings.site_name }}</strong>
+        <span>Health, Science &amp; Technology</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="{% url 'website:home' %}" class="{% if page == 'home' %}active{% endif %}">Home</a>
+      <a href="{% url 'website:about' %}" class="{% if page == 'about' %}active{% endif %}">About</a>
+      <a href="{% url 'website:programmes' %}" class="{% if page == 'programmes' %}active{% endif %}">Programmes</a>
+      <a href="{% url 'website:admissions' %}" class="{% if page == 'admissions' %}active{% endif %}">Admissions</a>
+      <a href="{% url 'website:departments' %}" class="{% if page == 'departments' %}active{% endif %}">Departments</a>
+      <a href="{% url 'website:facilities' %}" class="{% if page == 'facilities' %}active{% endif %}">Facilities</a>
+      <a href="{% url 'website:student_life' %}" class="{% if page == 'student-life' %}active{% endif %}">Student Life</a>
+      <a href="{% url 'website:news_list' %}" class="{% if page == 'news' %}active{% endif %}">News</a>
+      <a href="{% url 'website:contact' %}" class="{% if page == 'contact' %}active{% endif %}">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <form action="{% url 'website:search' %}" method="get" style="display:contents;">
+        <button type="button" class="icon-btn" id="navSearchBtn" aria-label="Search" onclick="document.getElementById('navSearchInput').classList.toggle('open')"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+      <button class="icon-btn" data-theme-toggle aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+      <a href="{% url 'accounts:staff_login' %}" class="btn btn-outline btn-sm">Staff Login</a>
+      <a href="{% url 'accounts:student_login' %}" class="btn btn-outline btn-sm">Student Login</a>
+      <a href="{% url 'admissions:apply' %}" class="btn btn-primary btn-sm">Apply Now</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileMenuClose"><i class="fa-solid fa-xmark"></i></button>
+  <a href="{% url 'website:home' %}" class="{% if page == 'home' %}active{% endif %}">Home</a>
+  <a href="{% url 'website:about' %}" class="{% if page == 'about' %}active{% endif %}">About</a>
+  <a href="{% url 'website:programmes' %}" class="{% if page == 'programmes' %}active{% endif %}">Programmes</a>
+  <a href="{% url 'website:admissions' %}" class="{% if page == 'admissions' %}active{% endif %}">Admissions</a>
+  <a href="{% url 'website:departments' %}" class="{% if page == 'departments' %}active{% endif %}">Departments</a>
+  <a href="{% url 'website:facilities' %}" class="{% if page == 'facilities' %}active{% endif %}">Facilities</a>
+  <a href="{% url 'website:student_life' %}" class="{% if page == 'student-life' %}active{% endif %}">Student Life</a>
+  <a href="{% url 'website:news_list' %}" class="{% if page == 'news' %}active{% endif %}">News</a>
+  <a href="{% url 'website:contact' %}" class="{% if page == 'contact' %}active{% endif %}">Contact</a>
+  <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+    <a href="{% url 'accounts:staff_login' %}" class="btn btn-outline btn-block">Staff Login</a>
+    <a href="{% url 'accounts:student_login' %}" class="btn btn-outline btn-block">Student Login</a>
+    <a href="{% url 'admissions:apply' %}" class="btn btn-primary btn-block">Apply Now</a>
+  </div>
+</div>
+<form action="{% url 'website:search' %}" method="get" id="navSearchInput" class="p-search-results" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);width:min(560px,92vw);display:none;padding:14px;z-index:400;">
+  <div class="search-box" style="min-width:0;"><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="q" placeholder="Search programmes, news, events..." autofocus></div>
+</form>
+<style>#navSearchInput.open{display:block;}</style>

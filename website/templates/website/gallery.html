@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Gallery — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Gallery</span></div>
+    <h1>Campus Gallery</h1>
+    <p>Moments from campus life, laboratories, practical sessions and community outreach.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="tabs reveal">
+      <a href="{% url 'website:gallery' %}" class="tab-btn {% if not active_category %}active{% endif %}">All</a>
+      {% for cat in categories %}
+      <a href="?category={{ cat.id }}" class="tab-btn {% if active_category == cat.id|stringformat:'s' %}active{% endif %}">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="gallery-grid">
+      {% for img in images %}
+      <div class="gallery-item reveal" data-lightbox data-image="{{ img.image.url }}" data-caption="{{ img.caption }} — {{ img.category.name }}">
+        <img src="{{ img.image.url }}" alt="{{ img.caption }}" loading="lazy">
+        <div class="g-overlay"><i class="fa-solid fa-expand"></i></div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-images"></i><h4>No images yet</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="galleryLightbox">
+  <button class="lightbox-close" id="lightboxClose"><i class="fa-solid fa-xmark"></i></button>
+  <button class="lightbox-nav prev" id="lightboxPrev"><i class="fa-solid fa-chevron-left"></i></button>
+  <button class="lightbox-nav next" id="lightboxNext"><i class="fa-solid fa-chevron-right"></i></button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="Gallery image">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+{% endblock %}

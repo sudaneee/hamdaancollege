@@ -1,0 +1,50 @@
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn{
+  from{opacity:0;} to{opacity:1;}
+}
+@keyframes scaleIn{
+  from{opacity:0;transform:scale(.94);} to{opacity:1;transform:scale(1);}
+}
+@keyframes slideInRight{
+  from{opacity:0;transform:translateX(30px);} to{opacity:1;transform:translateX(0);}
+}
+@keyframes floatCard{
+  0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(92,227,154,0.55);}
+  70%{box-shadow:0 0 0 8px rgba(92,227,154,0);}
+  100%{box-shadow:0 0 0 0 rgba(92,227,154,0);}
+}
+@keyframes skeletonLoad{
+  0%{background-position:100% 50%;} 100%{background-position:0 50%;}
+}
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.08s;}
+.reveal-delay-2{transition-delay:.16s;}
+.reveal-delay-3{transition-delay:.24s;}
+.reveal-delay-4{transition-delay:.32s;}
+.reveal-delay-5{transition-delay:.4s;}
+.reveal-delay-6{transition-delay:.48s;}
+
+.spin{animation:spin 1s linear infinite;}
+
+.btn-loading{position:relative;color:transparent !important;pointer-events:none;}
+.btn-loading::after{
+  content:'';position:absolute;width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.5);border-top-color:#fff;
+  animation:spin .7s linear infinite;left:50%;top:50%;margin:-8px 0 0 -8px;
+}
+.btn-outline.btn-loading::after,.btn-ghost.btn-loading::after{border-color:rgba(11,107,75,0.3);border-top-color:var(--primary);}

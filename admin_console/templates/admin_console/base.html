@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Console — {{ site_settings.site_name }}{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230B6B4B%22/><text x=%2250%22 y=%2266%22 font-size=%2246%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22bold%22>HIC</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'website/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/portal.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/responsive.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="portal-body">
+
+<div class="portal-shell">
+  <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:110;"></div>
+
+  <aside class="p-sidebar" id="pSidebar">
+    <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    <div class="p-sidebar-brand">
+      <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest" style="width:38px;height:38px;">
+      <div>
+        <strong>{{ site_settings.site_name }}</strong>
+        <span>Admin Console</span>
+      </div>
+    </div>
+
+    <nav class="p-nav">
+      <a href="{% url 'admin_console:home' %}" class="{% if active_nav == 'console' and not active_slug %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Overview</a>
+
+      {% if is_full_access or 'applications' in console_visible_dedicated or 'admission-cycles' in console_visible_slugs or 'invoices' in console_visible_dedicated or 'payments' in console_visible_dedicated %}
+      <div class="p-nav-label">Admissions</div>
+      {% if is_full_access or 'applications' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:applications_list' %}" class="{% if active_slug == 'applications' %}active{% endif %}"><i class="fa-solid fa-file-signature"></i> Applications</a>
+      {% endif %}
+      {% if is_full_access or 'admission-cycles' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'admission-cycles' %}" class="{% if active_slug == 'admission-cycles' %}active{% endif %}"><i class="fa-solid fa-calendar-check"></i> Admission Cycles</a>
+      {% endif %}
+      {% if is_full_access or 'invoices' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:invoices_list' %}" class="{% if active_slug == 'invoices' %}active{% endif %}"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices</a>
+      {% endif %}
+      {% if is_full_access or 'payments' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:payments_list' %}" class="{% if active_slug == 'payments' %}active{% endif %}"><i class="fa-solid fa-credit-card"></i> Payments</a>
+      {% endif %}
+      {% endif %}
+
+      {% if is_full_access or 'programmes' in console_visible_slugs or 'departments' in console_visible_slugs %}
+      <div class="p-nav-label">Academics</div>
+      {% if is_full_access or 'programmes' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'programmes' %}" class="{% if active_slug == 'programmes' %}active{% endif %}"><i class="fa-solid fa-graduation-cap"></i> Programmes</a>
+      {% endif %}
+      {% if is_full_access or 'departments' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'departments' %}" class="{% if active_slug == 'departments' %}active{% endif %}"><i class="fa-solid fa-building-columns"></i> Departments</a>
+      {% endif %}
+      {% if is_full_access %}
+      <a href="{% url 'admin_console:list' 'facilities' %}" class="{% if active_slug == 'facilities' %}active{% endif %}"><i class="fa-solid fa-hospital"></i> Facilities</a>
+      <a href="{% url 'admin_console:list' 'student-life' %}" class="{% if active_slug == 'student-life' %}active{% endif %}"><i class="fa-solid fa-people-group"></i> Student Life</a>
+      {% endif %}
+      {% endif %}
+
+      <div class="p-nav-label">Student Records</div>
+      {% if is_full_access or 'students' in console_visible_slugs or 'students' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:students_list' %}" class="{% if active_slug == 'students' %}active{% endif %}"><i class="fa-solid fa-user-graduate"></i> Students</a>
+      {% endif %}
+      {% if is_full_access or 'academic-sessions' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'academic-sessions' %}" class="{% if active_slug == 'academic-sessions' %}active{% endif %}"><i class="fa-solid fa-calendar-days"></i> Academic Sessions</a>
+      {% endif %}
+      {% if is_full_access or 'courses' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'courses' %}" class="{% if active_slug == 'courses' %}active{% endif %}"><i class="fa-solid fa-book"></i> Courses</a>
+      {% endif %}
+      {% if is_full_access or 'course-registrations' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'course-registrations' %}" class="{% if active_slug == 'course-registrations' %}active{% endif %}"><i class="fa-solid fa-clipboard-check"></i> Course Registrations</a>
+      {% endif %}
+      {% if is_full_access or 'results' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'results' %}" class="{% if active_slug == 'results' %}active{% endif %}"><i class="fa-solid fa-file-lines"></i> Results</a>
+      {% endif %}
+      {% if is_full_access or 'gradesheets' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:gradesheets_list' %}" class="{% if active_slug == 'gradesheets' %}active{% endif %}"><i class="fa-solid fa-file-excel"></i> Gradesheets</a>
+      {% endif %}
+      {% if is_full_access or 'attendance-records' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'attendance-records' %}" class="{% if active_slug == 'attendance-records' %}active{% endif %}"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
+      {% endif %}
+      {% if is_full_access %}
+      <a href="{% url 'admin_console:list' 'assignments' %}" class="{% if active_slug == 'assignments' %}active{% endif %}"><i class="fa-solid fa-clipboard-list"></i> Assignments</a>
+      <a href="{% url 'admin_console:submissions_list' %}" class="{% if active_slug == 'submissions' %}active{% endif %}"><i class="fa-solid fa-file-arrow-up"></i> Assignment Submissions</a>
+      {% endif %}
+      {% if is_full_access or 'timetable' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'timetable' %}" class="{% if active_slug == 'timetable' %}active{% endif %}"><i class="fa-solid fa-table-cells"></i> Timetable</a>
+      {% endif %}
+      {% if is_full_access or 'fee-structures' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'fee-structures' %}" class="{% if active_slug == 'fee-structures' %}active{% endif %}"><i class="fa-solid fa-sack-dollar"></i> Fee Structures</a>
+      {% endif %}
+      {% if is_full_access or 'student-invoices' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:student_invoices_list' %}" class="{% if active_slug == 'student-invoices' %}active{% endif %}"><i class="fa-solid fa-file-invoice-dollar"></i> Student Invoices</a>
+      {% endif %}
+      {% if is_full_access or 'student-payments' in console_visible_dedicated %}
+      <a href="{% url 'admin_console:student_payments_list' %}" class="{% if active_slug == 'student-payments' %}active{% endif %}"><i class="fa-solid fa-credit-card"></i> Student Payments</a>
+      {% endif %}
+      {% if is_full_access or 'student-announcements' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'student-announcements' %}" class="{% if active_slug == 'student-announcements' %}active{% endif %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+      {% endif %}
+      {% if is_full_access %}
+      <a href="{% url 'admin_console:support_tickets_list' %}" class="{% if active_slug == 'support-tickets' %}active{% endif %}"><i class="fa-solid fa-headset"></i> Support Tickets</a>
+
+      <div class="p-nav-label">Website Content</div>
+      <a href="{% url 'admin_console:site_settings' %}" class="{% if active_slug == 'site-settings' %}active{% endif %}"><i class="fa-solid fa-gear"></i> Site Settings</a>
+      <a href="{% url 'admin_console:about_content' %}" class="{% if active_slug == 'about-content' %}active{% endif %}"><i class="fa-solid fa-circle-info"></i> About Page</a>
+      <a href="{% url 'admin_console:list' 'statistics' %}" class="{% if active_slug == 'statistics' %}active{% endif %}"><i class="fa-solid fa-chart-simple"></i> Statistics</a>
+      <a href="{% url 'admin_console:list' 'why-choose' %}" class="{% if active_slug == 'why-choose' %}active{% endif %}"><i class="fa-solid fa-star"></i> Why Choose Us</a>
+      <a href="{% url 'admin_console:list' 'core-values' %}" class="{% if active_slug == 'core-values' %}active{% endif %}"><i class="fa-solid fa-heart"></i> Core Values</a>
+      <a href="{% url 'admin_console:list' 'news' %}" class="{% if active_slug == 'news' %}active{% endif %}"><i class="fa-solid fa-newspaper"></i> News</a>
+      <a href="{% url 'admin_console:list' 'events' %}" class="{% if active_slug == 'events' %}active{% endif %}"><i class="fa-solid fa-calendar-star"></i> Events</a>
+      <a href="{% url 'admin_console:list' 'gallery-categories' %}" class="{% if active_slug == 'gallery-categories' %}active{% endif %}"><i class="fa-solid fa-folder-tree"></i> Gallery Categories</a>
+      <a href="{% url 'admin_console:list' 'gallery-images' %}" class="{% if active_slug == 'gallery-images' %}active{% endif %}"><i class="fa-solid fa-images"></i> Gallery Images</a>
+      <a href="{% url 'admin_console:list' 'contact-messages' %}" class="{% if active_slug == 'contact-messages' %}active{% endif %}"><i class="fa-solid fa-envelope-open-text"></i> Contact Messages</a>
+
+      <div class="p-nav-label">System</div>
+      <a href="{% url 'admin_console:users_list' %}" class="{% if active_slug == 'users' %}active{% endif %}"><i class="fa-solid fa-users-gear"></i> Users &amp; Access</a>
+      <a href="{% url 'admin_console:list' 'staff-roles' %}" class="{% if active_slug == 'staff-roles' %}active{% endif %}"><i class="fa-solid fa-user-shield"></i> Staff Roles</a>
+      <a href="{% url 'admin:index' %}" target="_blank"><i class="fa-solid fa-toolbox"></i> Django Admin</a>
+      {% endif %}
+    </nav>
+
+    <div class="p-sidebar-foot">
+      <div class="p-user-mini">
+        <div class="p-avatar">{{ request.user.first_name|first|upper|default:"A" }}</div>
+        <div>
+          <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+          <span>{{ console_role_label }}</span>
+        </div>
+      </div>
+      <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="p-logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="p-main">
+    <header class="p-topbar">
+      <div class="p-topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <h2 style="font-size:16px;">{% block page_title %}Overview{% endblock %}</h2>
+      </div>
+      <div class="p-topbar-right">
+        <button class="icon-btn" data-theme-toggle aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+        <a href="{% url 'website:home' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-container">
+      {% for message in messages %}
+      <div class="toast {{ message.tags|default:'success' }}">
+        <i class="fa-solid {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+        <div class="toast-body"><strong>{{ message }}</strong></div>
+        <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="p-content">
+      {% block console_content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script src="{% static 'website/js/main.js' %}"></script>
+<script>
+  const pSidebar = document.getElementById('pSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  function openSidebar(){ pSidebar.classList.add('open'); overlay.style.display = 'block'; }
+  function closeSidebar(){ pSidebar.classList.remove('open'); overlay.style.display = 'none'; }
+  document.getElementById('sidebarToggle')?.addEventListener('click', openSidebar);
+  document.getElementById('sidebarClose')?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

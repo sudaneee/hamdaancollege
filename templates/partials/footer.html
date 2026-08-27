@@ -1,0 +1,73 @@
+{% load static %}
+<section class="footer-cta">
+  <div class="container">
+    <h2>{{ site_settings.footer_cta_heading }}</h2>
+    <div class="footer-cta-actions">
+      <a href="{% url 'admissions:apply' %}" class="btn btn-white btn-lg">Apply Today</a>
+      <a href="{% url 'website:contact' %}" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.5);color:#fff;">Contact Admissions</a>
+    </div>
+  </div>
+</section>
+<footer class="site-footer">
+  <div class="container footer-main">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="{% url 'website:home' %}" class="brand">
+          <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }}">
+          <div class="brand-text"><strong>{{ site_settings.site_name }}</strong><span style="color:rgba(255,255,255,0.55);">Health, Science &amp; Technology</span></div>
+        </a>
+        <p>{{ site_settings.footer_about }}</p>
+        <div class="footer-social">
+          <a href="{{ site_settings.facebook_url }}" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="{{ site_settings.instagram_url }}" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="{{ site_settings.twitter_url }}" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="{{ site_settings.linkedin_url }}" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="{% url 'website:about' %}">About</a></li>
+          <li><a href="{% url 'website:programmes' %}">Programmes</a></li>
+          <li><a href="{% url 'website:admissions' %}">Admissions</a></li>
+          <li><a href="{% url 'website:facilities' %}">Facilities</a></li>
+          <li><a href="{% url 'website:news_list' %}">News</a></li>
+          <li><a href="{% url 'website:contact' %}">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Student Resources</h5>
+        <ul>
+          <li><a href="{% url 'website:home' %}">Student Portal</a></li>
+          <li><a href="{% url 'website:home' %}">Results</a></li>
+          <li><a href="{% url 'website:home' %}">Timetable</a></li>
+          <li><a href="{% url 'website:home' %}">Fees</a></li>
+          <li><a href="{% url 'website:home' %}">Documents</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Admissions</h5>
+        <ul>
+          <li><a href="{% url 'admissions:apply' %}">Apply Now</a></li>
+          <li><a href="{% url 'website:admissions' %}">Requirements</a></li>
+          <li><a href="{% url 'website:programmes' %}">Programmes</a></li>
+          <li><a href="{% url 'website:home' %}">Application Status</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="{% url 'website:contact' %}">{{ site_settings.address_line }}</a></li>
+          <li><a href="tel:{{ site_settings.phone_1 }}">{{ site_settings.phone_1 }}</a></li>
+          {% if site_settings.phone_2 %}<li><a href="tel:{{ site_settings.phone_2 }}">{{ site_settings.phone_2 }}</a></li>{% endif %}
+          {% if site_settings.phone_3 %}<li><a href="tel:{{ site_settings.phone_3 }}">{{ site_settings.phone_3 }}</a></li>{% endif %}
+          <li><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; {% now "Y" %} {{ site_settings.site_name }}. All Rights Reserved.</div>
+</footer>
+{% if site_settings.whatsapp_number %}
+<a href="https://wa.me/{{ site_settings.whatsapp_number }}" target="_blank" rel="noopener" class="float-whatsapp" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+{% endif %}

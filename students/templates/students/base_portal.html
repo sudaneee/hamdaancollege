@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Student Portal — {{ site_settings.site_name }}{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230B6B4B%22/><text x=%2250%22 y=%2266%22 font-size=%2246%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22bold%22>HIC</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'website/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/portal.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/responsive.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="portal-body">
+
+<div class="portal-shell">
+  <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:110;"></div>
+
+  <aside class="p-sidebar" id="pSidebar">
+    <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    <div class="p-sidebar-brand">
+      <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest" style="width:38px;height:38px;">
+      <div>
+        <strong>{{ site_settings.site_name }}</strong>
+        <span>Student Portal</span>
+      </div>
+    </div>
+
+    <nav class="p-nav">
+      <a href="{% url 'students:dashboard' %}" class="{% if active_nav == 'dashboard' %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+      <a href="{% url 'students:profile' %}" class="{% if active_nav == 'profile' %}active{% endif %}"><i class="fa-solid fa-user"></i> My Profile</a>
+      <a href="{% url 'students:academics' %}" class="{% if active_nav == 'academics' %}active{% endif %}"><i class="fa-solid fa-chart-line"></i> Academic Overview</a>
+      <a href="{% url 'students:courses' %}" class="{% if active_nav == 'courses' %}active{% endif %}"><i class="fa-solid fa-book"></i> Course Registration</a>
+      <a href="{% url 'students:results' %}" class="{% if active_nav == 'results' %}active{% endif %}"><i class="fa-solid fa-file-lines"></i> Results</a>
+      <a href="{% url 'students:attendance' %}" class="{% if active_nav == 'attendance' %}active{% endif %}"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
+      <a href="{% url 'students:timetable' %}" class="{% if active_nav == 'timetable' %}active{% endif %}"><i class="fa-solid fa-table-cells"></i> Timetable</a>
+      <a href="{% url 'students:assignments' %}" class="{% if active_nav == 'assignments' %}active{% endif %}"><i class="fa-solid fa-clipboard-list"></i> Assignments</a>
+      <a href="{% url 'students:fees' %}" class="{% if active_nav == 'fees' %}active{% endif %}"><i class="fa-solid fa-money-bill-wave"></i> Fees &amp; Payments</a>
+      <a href="{% url 'students:documents' %}" class="{% if active_nav == 'documents' %}active{% endif %}"><i class="fa-solid fa-folder-open"></i> Documents</a>
+      <a href="{% url 'students:announcements' %}" class="{% if active_nav == 'announcements' %}active{% endif %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+      <a href="{% url 'students:notifications' %}" class="{% if active_nav == 'notifications' %}active{% endif %}"><i class="fa-solid fa-bell"></i> Notifications</a>
+      <a href="{% url 'students:support' %}" class="{% if active_nav == 'support' %}active{% endif %}"><i class="fa-solid fa-headset"></i> Support</a>
+    </nav>
+
+    <div class="p-sidebar-foot">
+      <div class="p-user-mini">
+        <div class="p-avatar">{{ request.user.student.full_name|first|upper }}</div>
+        <div>
+          <strong>{{ request.user.student.full_name }}</strong>
+          <span>{{ request.user.student.student_id }}</span>
+        </div>
+      </div>
+      <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="p-logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="p-main">
+    <header class="p-topbar">
+      <div class="p-topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <h2 style="font-size:16px;">{% block page_title %}Dashboard{% endblock %}</h2>
+      </div>
+      <div class="p-topbar-right">
+        <button class="icon-btn" data-theme-toggle aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+        <a href="{% url 'website:home' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-container">
+      {% for message in messages %}
+      <div class="toast {{ message.tags|default:'success' }}">
+        <i class="fa-solid {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+        <div class="toast-body"><strong>{{ message }}</strong></div>
+        <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="p-content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script src="{% static 'website/js/main.js' %}"></script>
+<script>
+  const pSidebar = document.getElementById('pSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  function openSidebar(){ pSidebar.classList.add('open'); overlay.style.display = 'block'; }
+  function closeSidebar(){ pSidebar.classList.remove('open'); overlay.style.display = 'none'; }
+  document.getElementById('sidebarToggle')?.addEventListener('click', openSidebar);
+  document.getElementById('sidebarClose')?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

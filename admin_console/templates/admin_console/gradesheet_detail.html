@@ -1,0 +1,69 @@
+{% extends "admin_console/base.html" %}
+{% block title %}{{ course.code }} Gradesheet — Console{% endblock %}
+{% block page_title %}Gradesheet{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{{ course.code }} — {{ course.title }}</h1><p>{{ session }} &middot; {{ course.semester }} Semester</p></div>
+  <a href="{% url 'admin_console:gradesheets_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Gradesheets</a>
+</div>
+
+{% if can_manage %}
+<div class="panel">
+  <div class="panel-head"><h3>1. Download &amp; Fill</h3></div>
+  <p style="color:var(--muted);font-size:13.5px;margin-bottom:12px;">Download the roster, hand it to the course lecturer to fill in CA and Exam scores, then upload the completed file below.</p>
+  <a href="{% url 'admin_console:gradesheet_download' session course.pk %}" class="btn btn-outline"><i class="fa-solid fa-file-arrow-down"></i> Download Template (Excel)</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>2. Upload Filled Sheet</h3></div>
+  <form method="post" action="{% url 'admin_console:gradesheet_upload' session course.pk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field"><input type="file" name="file" accept=".xlsx" required></div>
+    <button type="submit" class="btn btn-primary mt-1"><i class="fa-solid fa-file-arrow-up"></i> Upload</button>
+  </form>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>3. Review &amp; Publish</h3></div>
+  <p style="color:var(--muted);font-size:13.5px;margin-bottom:12px;">Review the roster below. Publishing makes every entered result in this course/session visible to students immediately.</p>
+  <form method="post" action="{% url 'admin_console:gradesheet_publish' session course.pk %}" onsubmit="return confirm('Publish all entered results for this course/session? Students will be able to see them immediately.');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-accent"><i class="fa-solid fa-bullhorn"></i> Publish All Entered Results</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="panel">
+  <div class="panel-head"><h3>Roster</h3></div>
+  <div class="table-wrap responsive-cards">
+    <table class="data-table">
+      <thead><tr><th>Student ID</th><th>Name</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for row in roster %}
+        <tr>
+          <td data-label="Student ID"><strong>{{ row.student.student_id }}</strong></td>
+          <td data-label="Name">{{ row.student.full_name }}</td>
+          {% if row.result %}
+          <td data-label="CA">{{ row.result.ca_score }}</td>
+          <td data-label="Exam">{{ row.result.exam_score }}</td>
+          <td data-label="Total">{{ row.result.score }}</td>
+          <td data-label="Grade">{{ row.result.grade }}</td>
+          <td data-label="Status">
+            <span class="badge {% if row.result.is_published %}badge-success{% else %}badge-warning{% endif %}">
+              {% if row.result.is_published %}Published{% else %}Draft{% endif %}
+            </span>
+          </td>
+          {% else %}
+          <td data-label="CA">—</td><td data-label="Exam">—</td><td data-label="Total">—</td><td data-label="Grade">—</td>
+          <td data-label="Status"><span class="badge badge-muted">Not Entered</span></td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);">No students registered for this course/session.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

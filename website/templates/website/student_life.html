@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Student Life — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Student Life</span></div>
+    <h1>Life at {{ site_settings.site_short_name }}</h1>
+    <p>Beyond the classroom — clubs, outreach, seminars and community that shape the student experience.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Get Involved</span>
+      <h2>A Vibrant Student Community</h2>
+    </div>
+    <div class="life-grid">
+      {% for a in activities %}
+      <div class="life-card reveal reveal-delay-{{ forloop.counter }}">
+        <div class="feature-icon"><i class="fa-solid {{ a.icon }}"></i></div>
+        <h3>{{ a.title }}</h3>
+        <p>{{ a.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">What's Coming Up</span>
+      <h2>Upcoming Activities</h2>
+    </div>
+    <div class="activity-list">
+      {% for e in events %}
+      <div class="activity-row reveal">
+        <div class="activity-date"><strong>{{ e.date|date:"j" }}</strong><span>{{ e.date|date:"M" }}</span></div>
+        <div><h4>{{ e.title }}</h4><p>{{ e.location }} &middot; {{ e.description }}</p></div>
+      </div>
+      {% empty %}
+      <div class="empty-state"><i class="fa-solid fa-calendar"></i><h4>No upcoming activities yet</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

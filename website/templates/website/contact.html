@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Contact</span></div>
+    <h1>Get In Touch</h1>
+    <p>We would love to hear from you — reach out with any questions about admissions or our programmes.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container contact-grid">
+    <div class="reveal">
+      <h3 style="margin-bottom:18px;">{{ site_settings.site_name }}</h3>
+      <div class="contact-info-card">
+        <div class="feature-icon"><i class="fa-solid fa-location-dot"></i></div>
+        <div><h4>Address</h4><p>{{ site_settings.address_line }}</p></div>
+      </div>
+      <div class="contact-info-card">
+        <div class="feature-icon"><i class="fa-solid fa-phone"></i></div>
+        <div><h4>Phone</h4><p>{{ site_settings.phone_1 }}{% if site_settings.phone_2 %} &middot; {{ site_settings.phone_2 }}{% endif %}{% if site_settings.phone_3 %} &middot; {{ site_settings.phone_3 }}{% endif %}</p></div>
+      </div>
+      <div class="contact-info-card">
+        <div class="feature-icon"><i class="fa-solid fa-envelope"></i></div>
+        <div><h4>Email</h4><p><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p></div>
+      </div>
+      <div class="contact-info-card">
+        <div class="feature-icon"><i class="fa-solid fa-clock"></i></div>
+        <div><h4>Office Hours</h4><p>{{ site_settings.office_hours }}</p></div>
+      </div>
+      <div class="map-placeholder">
+        <i class="fa-solid fa-map-location-dot" style="font-size:28px;"></i>
+        <span>{{ site_settings.address_line }}</span>
+      </div>
+      <div class="social-row">
+        <a href="{{ site_settings.facebook_url }}" class="icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="{{ site_settings.instagram_url }}" class="icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="{{ site_settings.twitter_url }}" class="icon-btn" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="{{ site_settings.linkedin_url }}" class="icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+
+    <div class="form-card reveal reveal-delay-1">
+      <h3 style="margin-bottom:6px;">Send Us a Message</h3>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:24px;">Our admissions team typically responds within one business day.</p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="field {% if form.name.errors %}error{% endif %}">
+            <label for="{{ form.name.id_for_label }}">Full Name <span class="req">*</span></label>
+            {{ form.name }}
+            <span class="field-error">{{ form.name.errors|join:", " }}</span>
+          </div>
+          <div class="field {% if form.email.errors %}error{% endif %}">
+            <label for="{{ form.email.id_for_label }}">Email Address <span class="req">*</span></label>
+            {{ form.email }}
+            <span class="field-error">{{ form.email.errors|join:", " }}</span>
+          </div>
+        </div>
+        <div class="field {% if form.subject.errors %}error{% endif %}">
+          <label for="{{ form.subject.id_for_label }}">Subject <span class="req">*</span></label>
+          {{ form.subject }}
+          <span class="field-error">{{ form.subject.errors|join:", " }}</span>
+        </div>
+        <div class="field {% if form.message.errors %}error{% endif %}">
+          <label for="{{ form.message.id_for_label }}">Message <span class="req">*</span></label>
+          {{ form.message }}
+          <span class="field-error">{{ form.message.errors|join:", " }}</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

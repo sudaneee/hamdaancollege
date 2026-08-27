@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Search — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Search</span></div>
+    <h1>Search Results</h1>
+    {% if query %}<p>Showing results for "{{ query }}"</p>{% endif %}
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <form method="get" class="search-box" style="max-width:480px;margin-bottom:40px;">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" name="q" value="{{ query }}" placeholder="Search programmes, news, events...">
+    </form>
+
+    {% if query %}
+      {% if results.programmes %}
+      <div class="section-head left reveal"><h2 style="font-size:22px;">Programmes</h2></div>
+      <div class="programme-grid mb-3">
+        {% for p in results.programmes %}
+        <div class="programme-card reveal">
+          <div class="programme-card-top"><span class="programme-cat">{{ p.get_category_display }}</span><h3>{{ p.name }}</h3></div>
+          <div class="programme-card-body"><p>{{ p.description|truncatewords:18 }}</p>
+            <div class="programme-card-actions"><a href="{{ p.get_absolute_url }}" class="btn btn-outline btn-sm">View Programme</a></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if results.news %}
+      <div class="section-head left reveal"><h2 style="font-size:22px;">News</h2></div>
+      <div class="news-grid mb-3">
+        {% for n in results.news %}
+        <div class="news-card reveal">
+          <div class="news-card-body"><h4>{{ n.title }}</h4><p>{{ n.excerpt|truncatechars:90 }}</p><a href="{{ n.get_absolute_url }}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a></div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if results.events %}
+      <div class="section-head left reveal"><h2 style="font-size:22px;">Events</h2></div>
+      <div class="activity-list">
+        {% for e in results.events %}
+        <div class="activity-row reveal">
+          <div class="activity-date"><strong>{{ e.date|date:"j" }}</strong><span>{{ e.date|date:"M" }}</span></div>
+          <div><h4>{{ e.title }}</h4><p>{{ e.location }} &middot; {{ e.description }}</p></div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if not results.programmes and not results.news and not results.events %}
+      <div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h4>No results found</h4><p>Try a different search term.</p></div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

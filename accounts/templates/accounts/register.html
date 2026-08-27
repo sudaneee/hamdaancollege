@@ -1,0 +1,51 @@
+{% extends "auth_base.html" %}
+{% load static %}
+{% block title %}Create Your Account — {{ site_settings.site_name }}{% endblock %}
+
+{% block auth_icon %}fa-user-plus{% endblock %}
+{% block auth_heading %}Start Your Application{% endblock %}
+{% block auth_subheading %}Create your applicant account, verify your email, pay the application fee and complete your admission form for the {{ site_settings.admission_session }} academic session.{% endblock %}
+
+{% block auth_content %}
+  <div class="mb-2" style="text-align:center;">
+    <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest" style="margin:0 auto 14px;width:56px;height:56px;">
+    <h2 style="font-size:24px;">Create Your Account</h2>
+    <p style="color:var(--muted);font-size:14px;">You'll use your email address to log in.</p>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="field {% if form.first_name.errors %}error{% endif %}">
+        <label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>
+        {{ form.first_name }}<span class="field-error">{{ form.first_name.errors|join:", " }}</span>
+      </div>
+      <div class="field {% if form.last_name.errors %}error{% endif %}">
+        <label for="{{ form.last_name.id_for_label }}">Last Name <span class="req">*</span></label>
+        {{ form.last_name }}<span class="field-error">{{ form.last_name.errors|join:", " }}</span>
+      </div>
+    </div>
+    <div class="field {% if form.email.errors %}error{% endif %}">
+      <label for="{{ form.email.id_for_label }}">Email Address <span class="req">*</span></label>
+      {{ form.email }}<span class="field-error">{{ form.email.errors|join:", " }}</span>
+    </div>
+    <div class="field {% if form.phone.errors %}error{% endif %}">
+      <label for="{{ form.phone.id_for_label }}">Phone Number <span class="req">*</span></label>
+      {{ form.phone }}<span class="field-error">{{ form.phone.errors|join:", " }}</span>
+    </div>
+    <div class="form-row">
+      <div class="field pass-field {% if form.password1.errors %}error{% endif %}">
+        <label for="{{ form.password1.id_for_label }}">Password <span class="req">*</span></label>
+        {{ form.password1 }}<span class="field-error">{{ form.password1.errors|join:", " }}</span>
+      </div>
+      <div class="field pass-field {% if form.password2.errors %}error{% endif %}">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password <span class="req">*</span></label>
+        {{ form.password2 }}<span class="field-error">{{ form.password2.errors|join:", " }}</span>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account <i class="fa-solid fa-arrow-right"></i></button>
+  </form>
+
+  <p class="text-center mt-2" style="font-size:13px;color:var(--muted);">Already have an account? <a href="{% url 'accounts:login' %}" style="color:var(--primary);font-weight:700;">Sign in</a></p>
+  <p class="text-center mt-2" style="font-size:13px;"><a href="{% url 'website:home' %}" style="color:var(--primary);font-weight:700;">&larr; Back to website</a></p>
+{% endblock %}

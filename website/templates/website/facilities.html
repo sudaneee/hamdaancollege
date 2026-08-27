@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Facilities — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Facilities</span></div>
+    <h1>Campus Facilities</h1>
+    <p>Modern laboratories, classrooms and learning resources built to support practical, hands-on education.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="facility-grid">
+      {% for f in facilities %}
+      <div class="facility-card reveal">
+        <img src="{{ f.image.url }}" alt="{{ f.name }}">
+        <div class="facility-overlay"><h4>{{ f.name }}</h4><p>{{ f.description }}</p></div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-building"></i><h4>Facilities coming soon</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

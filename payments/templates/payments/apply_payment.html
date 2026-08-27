@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Pay Application Fee — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <a href="{% url 'admissions:dashboard' %}">Dashboard</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Application Fee</span></div>
+    <h1>Pay Your Application Fee</h1>
+    <p>Application No: <strong>{{ application.application_number }}</strong> — {{ application.cycle.session }} Academic Session</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container" style="max-width:520px;">
+    <div class="form-card">
+      <div class="review-block">
+        <h5>Application Fee</h5>
+        <div class="review-row"><span>Session</span><span>{{ application.cycle.session }}</span></div>
+        <div class="review-row"><span>Amount Due</span><span>₦{{ invoice.balance|floatformat:2|intcomma }}</span></div>
+        <div class="review-row"><span>Status</span><span>{{ invoice.get_status_display }}</span></div>
+      </div>
+
+      {% if invoice.is_paid %}
+        <p style="margin-top:16px;color:var(--muted);">This fee has already been paid — you can continue your application.</p>
+        <a href="{% url 'admissions:dashboard' %}" class="btn btn-primary btn-block mt-2">Back to Dashboard <i class="fa-solid fa-arrow-right"></i></a>
+      {% else %}
+        <form method="post" action="{% url 'payments:initiate_application_payment' %}" class="mt-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-accent btn-lg btn-block">Pay ₦{{ invoice.balance|floatformat:2|intcomma }} Now <i class="fa-solid fa-lock"></i></button>
+        </form>
+        {% if pending_payment %}
+        <form method="post" action="{% url 'payments:check_application_payment_status' pending_payment.pk %}" class="mt-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline btn-block">I've Paid — Check Status</button>
+        </form>
+        {% endif %}
+        <p style="margin-top:14px;color:var(--muted);font-size:13px;">You'll be redirected to ZainPay's secure checkout to complete payment.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

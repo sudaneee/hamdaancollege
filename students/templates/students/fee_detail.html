@@ -1,0 +1,55 @@
+{% extends "students/base_portal.html" %}
+{% load humanize %}
+{% block title %}{{ session }} Fees — Student Portal{% endblock %}
+{% block page_title %}Fees &amp; Payments{% endblock %}
+{% block content %}
+<div class="p-page-head">
+  <div><h1>{{ session }} Fees</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div>
+  <a href="{% url 'students:fees' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Fees</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Summary</h3>
+    <span class="badge {% if invoice.is_paid %}badge-success{% else %}badge-danger{% endif %}">{% if invoice.is_paid %}Paid{% else %}Unpaid{% endif %}</span>
+  </div>
+  <div class="review-row"><span>Amount</span><span>₦{{ invoice.amount|default:structure.amount|floatformat:2|intcomma }}</span></div>
+  {% if invoice %}
+  <div class="review-row"><span>Paid So Far</span><span>₦{{ invoice.amount_paid|floatformat:2|intcomma }}</span></div>
+  <div class="review-row"><span>Balance</span><span>₦{{ invoice.balance|floatformat:2|intcomma }}</span></div>
+  {% endif %}
+  {% if structure.breakdown_note %}
+    <h5 style="margin-top:16px;margin-bottom:8px;">Breakdown</h5>
+    <pre style="white-space:pre-wrap;font-family:inherit;font-size:13.5px;color:var(--text-soft);">{{ structure.breakdown_note }}</pre>
+  {% endif %}
+
+  {% if not invoice.is_paid %}
+    {% if registration_open %}
+      <a href="{% url 'payments:student_fee_payment' session %}" class="btn btn-accent btn-lg btn-block mt-2"><i class="fa-solid fa-credit-card"></i> Pay Now</a>
+    {% else %}
+      <p style="color:var(--muted);font-size:13.5px;margin-top:14px;">The payment window for {{ session }} is currently closed. Contact the Bursary if you believe this is a mistake.</p>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% if payments %}
+<div class="panel">
+  <div class="panel-head"><h3>Payment Records</h3></div>
+  <div class="table-wrap responsive-cards">
+    <table class="data-table">
+      <thead><tr><th>Reference</th><th>Amount</th><th>Gateway</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for p in payments %}
+        <tr>
+          <td data-label="Reference">{{ p.reference }}</td>
+          <td data-label="Amount">₦{{ p.amount|floatformat:2|intcomma }}</td>
+          <td data-label="Gateway">{{ p.get_gateway_display }}</td>
+          <td data-label="Date">{{ p.created_at|date:"d M Y" }}</td>
+          <td data-label="Status"><span class="badge {% if p.status == 'success' %}badge-success{% elif p.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">{{ p.get_status_display }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}News &amp; Events — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>News &amp; Events</span></div>
+    <h1>News &amp; Events</h1>
+    <p>Stay informed on admissions, campus activities and community impact stories.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    {% if featured_article %}
+    <div class="news-featured reveal">
+      <img src="{% if featured_article.image %}{{ featured_article.image.url }}{% else %}https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80{% endif %}" alt="{{ featured_article.title }}">
+      <div class="news-featured-body">
+        <div class="news-meta"><span class="news-cat">{{ featured_article.category }}</span><span><i class="fa-regular fa-calendar"></i> {{ featured_article.date|date:"j F Y" }}</span><span><i class="fa-regular fa-user"></i> {{ featured_article.author }}</span></div>
+        <h3>{{ featured_article.title }}</h3>
+        <p>{{ featured_article.excerpt }}</p>
+        <a href="{{ featured_article.get_absolute_url }}" class="btn btn-primary" style="width:fit-content;">Read More</a>
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="get" class="news-toolbar">
+      <div class="tabs" style="justify-content:flex-start;margin:0;">
+        <a href="{% url 'website:news_list' %}" class="tab-btn {% if active_category == 'All' %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="?category={{ cat }}" class="tab-btn {% if active_category == cat %}active{% endif %}">{{ cat }}</a>
+        {% endfor %}
+      </div>
+      <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="q" value="{{ query }}" placeholder="Search news articles..."></div>
+    </form>
+
+    <div class="news-grid">
+      {% for n in page_obj %}
+      <div class="news-card reveal">
+        <img src="{% if n.image %}{{ n.image.url }}{% else %}https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80{% endif %}" alt="{{ n.title }}" loading="lazy">
+        <div class="news-card-body">
+          <div class="news-meta"><span class="news-cat">{{ n.category }}</span><span>{{ n.date|date:"j F Y" }}</span></div>
+          <h4>{{ n.title }}</h4>
+          <p>{{ n.excerpt|truncatechars:90 }}</p>
+          <a href="{{ n.get_absolute_url }}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-newspaper"></i><h4>No articles found</h4><p>Try a different search or category.</p></div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+      {% for num in page_obj.paginator.page_range %}
+      <a href="?page={{ num }}{% if active_category != 'All' %}&category={{ active_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="page-btn {% if page_obj.number == num %}active{% endif %}">{{ num }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Upcoming Events</span>
+      <h2>Mark Your Calendar</h2>
+    </div>
+    <div class="activity-list">
+      {% for e in events %}
+      <div class="activity-row reveal">
+        <div class="activity-date"><strong>{{ e.date|date:"j" }}</strong><span>{{ e.date|date:"M" }}</span></div>
+        <div><h4>{{ e.title }}</h4><p>{{ e.location }} &middot; {{ e.description }}</p></div>
+      </div>
+      {% empty %}
+      <div class="empty-state"><i class="fa-solid fa-calendar"></i><h4>No upcoming events yet</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

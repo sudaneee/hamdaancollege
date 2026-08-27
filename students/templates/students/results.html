@@ -1,0 +1,27 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Results — Student Portal{% endblock %}
+{% block page_title %}Results{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Results</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div></div>
+
+<div class="stat-cards" style="grid-template-columns:repeat(2,1fr);">
+  <div class="stat-card"><strong>{{ student.gpa }}</strong><span class="stat-label">Current Session GPA</span></div>
+  <div class="stat-card"><strong>{{ student.cgpa }}</strong><span class="stat-label">CGPA</span></div>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Available Results</h3></div>
+  {% for g in groups %}
+  <a href="{% url 'students:result_detail' g.session g.semester %}" class="list-row" style="text-decoration:none;color:inherit;">
+    <div class="list-row-time">{{ g.session }}</div>
+    <div class="list-row-body">
+      <strong>{{ g.semester }} Semester</strong>
+      <span>{{ g.course_count }} course{{ g.course_count|pluralize }} &middot; GPA {{ g.gpa }}</span>
+    </div>
+    <i class="fa-solid fa-chevron-right" style="color:var(--muted);"></i>
+  </a>
+  {% empty %}
+  <p style="color:var(--muted);font-size:13.5px;">No results published yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

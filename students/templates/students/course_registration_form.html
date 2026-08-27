@@ -1,0 +1,38 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Register Courses — Student Portal{% endblock %}
+{% block page_title %}Course Registration{% endblock %}
+{% block content %}
+<div class="p-page-head">
+  <div><h1>Register Courses — {{ student.session }}</h1><p>{{ student.programme }} &middot; {{ student.level }}. Tick every course you want to register, then save — you can come back and adjust this any time while registration stays open.</p></div>
+  <a href="{% url 'students:courses' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="panel">
+    <div class="panel-head"><h3>First Semester</h3></div>
+    {% for course in first_semester %}
+    <label class="list-row" style="cursor:pointer;">
+      <input type="checkbox" name="courses" value="{{ course.pk }}" {% if course.pk in registered_ids %}checked{% endif %} style="width:18px;height:18px;margin-right:4px;">
+      <div class="list-row-body"><strong>{{ course.code }} — {{ course.title }}</strong><span>{{ course.units }} unit{{ course.units|pluralize }} &middot; {{ course.programme }} &middot; {{ course.lecturer_name|default:"—" }}</span></div>
+    </label>
+    {% empty %}
+    <p style="color:var(--muted);font-size:13.5px;">No first semester courses available for your level yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Second Semester</h3></div>
+    {% for course in second_semester %}
+    <label class="list-row" style="cursor:pointer;">
+      <input type="checkbox" name="courses" value="{{ course.pk }}" {% if course.pk in registered_ids %}checked{% endif %} style="width:18px;height:18px;margin-right:4px;">
+      <div class="list-row-body"><strong>{{ course.code }} — {{ course.title }}</strong><span>{{ course.units }} unit{{ course.units|pluralize }} &middot; {{ course.programme }} &middot; {{ course.lecturer_name|default:"—" }}</span></div>
+    </label>
+    {% empty %}
+    <p style="color:var(--muted);font-size:13.5px;">No second semester courses available for your level yet.</p>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Save Course Registration</button>
+</form>
+{% endblock %}

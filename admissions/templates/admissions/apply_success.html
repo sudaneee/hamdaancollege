@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Application Submitted — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:700px;">
+    <div class="form-card">
+      <div class="success-panel">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h2 style="font-size:24px;margin-bottom:8px;">Application Submitted Successfully</h2>
+        <p style="color:var(--muted);">Thank you for applying to {{ site_settings.site_name }}. Your application number is below — please keep it safe.</p>
+        <div class="app-number">{{ application.application_number }}</div>
+        <p style="color:var(--muted);font-size:13.5px;margin:14px 0 24px;">Our admissions team will contact you at <strong>{{ application.email }}</strong> or <strong>{{ application.phone }}</strong> with updates on your application status.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Summary</button>
+          <a href="{% url 'website:home' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

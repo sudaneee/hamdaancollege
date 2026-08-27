@@ -1,0 +1,51 @@
+{% extends "students/base_portal.html" %}
+{% block title %}{{ session }} Registration — Student Portal{% endblock %}
+{% block page_title %}Course Registration{% endblock %}
+{% block content %}
+<div class="p-page-head">
+  <div><h1>{{ session }} Registration</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div>
+  <a href="{% url 'students:courses' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Course Registration</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>First Semester</h3></div>
+  <div class="table-wrap responsive-cards">
+    <table class="data-table">
+      <thead><tr><th>Code</th><th>Course Title</th><th>Units</th><th>Lecturer</th></tr></thead>
+      <tbody>
+        {% for reg in first_semester %}
+        <tr>
+          <td data-label="Code"><strong>{{ reg.course.code }}</strong></td>
+          <td data-label="Title">{{ reg.course.title }}</td>
+          <td data-label="Units">{{ reg.course.units }}</td>
+          <td data-label="Lecturer">{{ reg.course.lecturer_name|default:"—" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);">No first semester courses registered.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Second Semester</h3></div>
+  <div class="table-wrap responsive-cards">
+    <table class="data-table">
+      <thead><tr><th>Code</th><th>Course Title</th><th>Units</th><th>Lecturer</th></tr></thead>
+      <tbody>
+        {% for reg in second_semester %}
+        <tr>
+          <td data-label="Code"><strong>{{ reg.course.code }}</strong></td>
+          <td data-label="Title">{{ reg.course.title }}</td>
+          <td data-label="Units">{{ reg.course.units }}</td>
+          <td data-label="Lecturer">{{ reg.course.lecturer_name|default:"—" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);">No second semester courses registered.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static humanize %}
+{% block title %}{{ site_settings.site_name }} — Health, Science &amp; Technology{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      <span class="hero-badge"><i class="fa-solid fa-graduation-cap"></i> {{ site_settings.hero_badge_text }}</span>
+      <h1>{{ site_settings.hero_headline|cut:site_settings.hero_highlight }}<em>{{ site_settings.hero_highlight }}</em></h1>
+      <p>{{ site_settings.hero_subtext }}</p>
+      <div class="hero-actions">
+        <a href="{% url 'admissions:apply' %}" class="btn btn-accent btn-lg">{{ site_settings.hero_primary_cta_text }}</a>
+        <a href="{% url 'website:programmes' %}" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.4);color:#fff;">{{ site_settings.hero_secondary_cta_text }}</a>
+      </div>
+      <div class="hero-stats">
+        {% for stat in statistics|slice:":3" %}
+        <div><strong>{{ stat.value|intcomma }}{{ stat.suffix }}</strong><span>{{ stat.label }}</span></div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="hero-media">
+      <div class="hero-float-tag">{{ site_settings.marketing_phrase }}</div>
+      <div class="hero-media-frame">
+        <img src="{% if site_settings.hero_image %}{{ site_settings.hero_image.url }}{% else %}https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ site_settings.site_name }}">
+      </div>
+      <div class="hero-float-card">
+        <div class="icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div><strong>{{ site_settings.admission_session }} Academic Session</strong><span>Admission {% if site_settings.admission_open %}Open{% else %}Closed{% endif %}</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-band">
+  <div class="container stats-grid">
+    {% for stat in statistics %}
+    <div class="stat-item reveal reveal-delay-{{ forloop.counter }}"><strong data-count="{{ stat.value }}" data-suffix="{{ stat.suffix }}">0</strong><span>{{ stat.label }}</span></div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why Hamdaan</span>
+      <h2>Why Choose Hamdaan International College</h2>
+      <p>A trusted institution shaping the next generation of health, science and technology professionals in Nigeria.</p>
+    </div>
+    <div class="feature-grid">
+      {% for item in why_choose_items %}
+      <div class="feature-card reveal reveal-delay-{{ forloop.counter }}">
+        <div class="feature-icon"><i class="fa-solid {{ item.icon }}"></i></div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Academic Programmes</span>
+      <h2>Programmes Designed for Real Careers</h2>
+      <p>National Diploma, Professional Diploma and Certification pathways across six health science departments.</p>
+    </div>
+    <div class="programme-grid">
+      {% for p in programmes %}
+      <div class="programme-card reveal">
+        <div class="programme-card-top">
+          <span class="programme-cat">{{ p.get_category_display }}</span>
+          <h3>{{ p.name }}</h3>
+          <div class="programme-meta">
+            <span><i class="fa-regular fa-clock"></i> {{ p.duration }}</span>
+            <span><i class="fa-solid fa-building-columns"></i> {{ p.department.name|default:"General Studies" }}</span>
+          </div>
+        </div>
+        <div class="programme-card-body">
+          <p>{{ p.description|truncatewords:22 }}</p>
+          <div class="programme-card-actions">
+            <a href="{{ p.get_absolute_url }}" class="btn btn-outline btn-sm">View Programme</a>
+            <a href="{% url 'admissions:apply' %}?programme={{ p.id }}" class="btn btn-primary btn-sm">Apply Now</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-inbox"></i><h4>Programmes coming soon</h4></div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3"><a href="{% url 'website:programmes' %}" class="btn btn-primary btn-lg">View All Programmes</a></div>
+  </div>
+</section>
+
+{% if featured_programme %}
+<section class="section">
+  <div class="container">
+    <div class="featured-programme reveal">
+      <div class="featured-programme-media">
+        <img src="{% if featured_programme.image %}{{ featured_programme.image.url }}{% else %}https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ featured_programme.name }}">
+      </div>
+      <div class="featured-programme-body">
+        <span class="eyebrow">Featured Programme</span>
+        <h3>{{ featured_programme.name }}</h3>
+        <p style="color:rgba(255,255,255,0.82);margin-bottom:16px;">{{ featured_programme.description|truncatewords:35 }}</p>
+        <ul class="featured-list">
+          <li><i class="fa-solid fa-check"></i> {{ featured_programme.duration }} full-time programme</li>
+          {% for career in featured_programme.career_list|slice:":3" %}
+          <li><i class="fa-solid fa-check"></i> {{ career }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ featured_programme.get_absolute_url }}" class="btn btn-accent">Explore Programme</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="admission-banner reveal">
+      <span class="eyebrow" style="background:rgba(255,255,255,0.15);color:var(--accent);">Admissions</span>
+      <h2>Your Future Starts Here</h2>
+      <p style="color:rgba(255,255,255,0.85);">{{ site_settings.admission_session }} Academic Session</p>
+      <div class="admission-status"><span class="dot"></span> Admission Status: {% if site_settings.admission_open %}OPEN{% else %}CLOSED{% endif %}</div>
+      <div><a href="{% url 'admissions:apply' %}" class="btn btn-accent btn-lg mt-1">Start Application</a></div>
+      <div class="steps-grid">
+        <div class="step-item"><div class="step-num">1</div><h4>Choose a Programme</h4><p>Explore our departments and select the right fit for your career.</p></div>
+        <div class="step-item"><div class="step-num">2</div><h4>Complete Application</h4><p>Fill out the online application form with accurate information.</p></div>
+        <div class="step-item"><div class="step-num">3</div><h4>Submit Documents</h4><p>Upload your credentials and supporting identification documents.</p></div>
+        <div class="step-item"><div class="step-num">4</div><h4>Application Review</h4><p>Our admissions team reviews your application and documents.</p></div>
+        <div class="step-item"><div class="step-num">5</div><h4>Receive Decision</h4><p>Get notified of your admission decision by phone or email.</p></div>
+        <div class="step-item"><div class="step-num">6</div><h4>Complete Registration</h4><p>Finalise registration and begin your academic journey with us.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-grid">
+    <div class="about-media reveal">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80" alt="Students at {{ site_settings.site_name }}">
+    </div>
+    <div class="reveal reveal-delay-1">
+      <span class="eyebrow">Who We Are</span>
+      <h2 style="font-size:clamp(26px,3.6vw,36px);margin-bottom:14px;">A Trusted Institution in Health Science Education</h2>
+      <p style="color:var(--muted);font-size:16px;margin-bottom:18px;">{{ site_settings.who_we_are_short }}</p>
+      <div class="value-grid">
+        {% for value in core_values|slice:":6" %}
+        <div class="value-chip"><i class="fa-solid {{ value.icon }}"></i> {{ value.title }}</div>
+        {% endfor %}
+      </div>
+      <a href="{% url 'website:about' %}" class="btn btn-outline mt-2">Learn More About Us</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">News &amp; Events</span>
+      <h2>Latest From {{ site_settings.site_short_name }}</h2>
+      <p>Stay up to date with admissions, campus activities and community impact stories.</p>
+    </div>
+    <div class="news-grid">
+      {% for n in news_items %}
+      <div class="news-card reveal">
+        <img src="{% if n.image %}{{ n.image.url }}{% else %}https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80{% endif %}" alt="{{ n.title }}" loading="lazy">
+        <div class="news-card-body">
+          <div class="news-meta"><span class="news-cat">{{ n.category }}</span><span>{{ n.date|date:"j F Y" }}</span></div>
+          <h4>{{ n.title }}</h4>
+          <p>{{ n.excerpt|truncatechars:100 }}</p>
+          <a href="{{ n.get_absolute_url }}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-newspaper"></i><h4>No news yet</h4></div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3"><a href="{% url 'website:news_list' %}" class="btn btn-outline btn-lg">View All News</a></div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>document.addEventListener('DOMContentLoaded', initRevealOnScroll);</script>
+{% endblock %}

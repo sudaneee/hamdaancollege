@@ -1,0 +1,28 @@
+{% extends "admin_console/base.html" %}
+{% block title %}Add Staff User — Console{% endblock %}
+{% block page_title %}Users &amp; Access{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>Add Staff User</h1></div>
+  <a href="{% url 'admin_console:users_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Users</a>
+</div>
+
+<div class="panel" style="max-width:520px;">
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="field {% if field.errors %}error{% endif %}">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      <span class="field-error">{{ field.errors|join:", " }}</span>
+    </div>
+    {% endfor %}
+    <div class="field">
+      <label for="id_password">Password <span class="req">*</span></label>
+      <input type="password" name="password" id="id_password" placeholder="Set an initial password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg mt-2">Create User</button>
+  </form>
+</div>
+{% endblock %}

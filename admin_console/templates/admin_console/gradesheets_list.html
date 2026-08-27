@@ -1,0 +1,32 @@
+{% extends "admin_console/base.html" %}
+{% block title %}Gradesheets — Console{% endblock %}
+{% block page_title %}Gradesheets{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>Gradesheets</h1><p>One row per Course + Session that has student registrations. Open one to download the Excel template, upload the filled sheet, review, and publish.</p></div>
+</div>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr><th>Session</th><th>Course</th><th>Semester</th><th>Registered</th><th>Entered</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td data-label="Session">{{ row.session }}</td>
+        <td data-label="Course"><strong>{{ row.course__code }}</strong> — {{ row.course__title }}</td>
+        <td data-label="Semester">{{ row.course__semester }}</td>
+        <td data-label="Registered">{{ row.registered_count }}</td>
+        <td data-label="Entered">{{ row.entered }} / {{ row.registered_count }}</td>
+        <td data-label="Status">
+          <span class="badge {% if row.status == 'Published' %}badge-success{% elif row.status == 'Draft' %}badge-warning{% else %}badge-muted{% endif %}">{{ row.status }}</span>
+        </td>
+        <td data-label="Actions"><a href="{% url 'admin_console:gradesheet_detail' row.session row.course_id %}" class="btn btn-outline btn-sm">Open</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center;color:var(--muted);">No course registrations yet — gradesheets appear once students register for courses.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

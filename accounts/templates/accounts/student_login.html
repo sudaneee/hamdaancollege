@@ -1,0 +1,31 @@
+{% extends "auth_base.html" %}
+{% load static %}
+{% block title %}Student Login — {{ site_settings.site_name }}{% endblock %}
+
+{% block auth_icon %}fa-user-graduate{% endblock %}
+{% block auth_heading %}Student Portal{% endblock %}
+{% block auth_subheading %}Results, attendance, timetable, fees and more for currently enrolled students.{% endblock %}
+
+{% block auth_content %}
+  <div class="mb-2" style="text-align:center;">
+    <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest" style="margin:0 auto 14px;width:56px;height:56px;">
+    <h2 style="font-size:24px;">Student Sign In</h2>
+    <p style="color:var(--muted);font-size:14px;">For currently enrolled students only</p>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="field {% if form.identifier.errors %}error{% endif %}">
+      <label for="{{ form.identifier.id_for_label }}">Email or Username <span class="req">*</span></label>
+      {{ form.identifier }}<span class="field-error">{{ form.identifier.errors|join:", " }}</span>
+    </div>
+    <div class="field pass-field {% if form.password.errors %}error{% endif %}">
+      <label for="{{ form.password.id_for_label }}">Password <span class="req">*</span></label>
+      {{ form.password }}<span class="field-error">{{ form.password.errors|join:", " }}</span>
+    </div>
+    <p style="text-align:right;margin:-8px 0 16px;"><a href="{% url 'accounts:password_reset' %}" style="font-size:12.5px;">Forgot password?</a></p>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In <i class="fa-solid fa-arrow-right"></i></button>
+  </form>
+
+  <p class="text-center mt-2" style="font-size:13px;"><a href="{% url 'website:home' %}" style="color:var(--primary);font-weight:700;">&larr; Back to website</a></p>
+{% endblock %}

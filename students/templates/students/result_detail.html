@@ -1,0 +1,36 @@
+{% extends "students/base_portal.html" %}
+{% block title %}{{ session }} {{ semester }} Semester Results — Student Portal{% endblock %}
+{% block page_title %}Results{% endblock %}
+{% block content %}
+<div class="p-page-head">
+  <div><h1>{{ session }} &middot; {{ semester }} Semester</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div>
+  <a href="{% url 'students:results' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Results</a>
+</div>
+
+<div class="stat-cards" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-card"><strong>{{ gpa }}</strong><span class="stat-label">Semester GPA</span></div>
+  <div class="stat-card"><strong>{{ results|length }}</strong><span class="stat-label">Courses</span></div>
+  <div class="stat-card"><strong>{{ session }}</strong><span class="stat-label">Session</span></div>
+</div>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr><th>Course Code</th><th>Course Title</th><th>Units</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Grade Point</th><th>Remark</th></tr></thead>
+    <tbody>
+      {% for r in results %}
+      <tr>
+        <td data-label="Code"><strong>{{ r.course.code }}</strong></td>
+        <td data-label="Title">{{ r.course.title }}</td>
+        <td data-label="Units">{{ r.course.units }}</td>
+        <td data-label="CA">{{ r.ca_score }}</td>
+        <td data-label="Exam">{{ r.exam_score }}</td>
+        <td data-label="Total">{{ r.score }}</td>
+        <td data-label="Grade"><span class="badge {% if r.grade == 'F' %}badge-danger{% elif r.grade == 'A' %}badge-success{% else %}badge-info{% endif %}">{{ r.grade }}</span></td>
+        <td data-label="GP">{{ r.grade_point }}</td>
+        <td data-label="Remark">{{ r.remark }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

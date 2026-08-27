@@ -1,0 +1,63 @@
+{% extends "admin_console/base.html" %}
+{% block title %}{{ entry.label }} — Console{% endblock %}
+{% block page_title %}{{ entry.label }}{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{{ entry.label }}</h1></div>
+  {% if can_manage %}
+  <a href="{% url 'admin_console:create' entry.slug %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add {{ entry.singular }}</a>
+  {% endif %}
+</div>
+
+<form method="get" class="filter-bar">
+  {% if entry.search_fields %}
+  <div class="p-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" name="q" value="{{ q }}" placeholder="Search {{ entry.label|lower }}...">
+  </div>
+  {% endif %}
+  {% for name, label, options, current in filters %}
+  <select name="{{ name }}" onchange="this.form.submit()">
+    <option value="">All {{ label }}</option>
+    {% for value, opt_label in options %}
+    <option value="{{ value }}" {% if current == value|stringformat:"s" %}selected{% endif %}>{{ opt_label }}</option>
+    {% endfor %}
+  </select>
+  {% endfor %}
+  <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+  {% if q or active_filters %}<a href="{% url 'admin_console:list' entry.slug %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+</form>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr>
+      {% for path, label in entry.list_fields %}<th>{{ label }}</th>{% endfor %}
+      <th></th>
+    </tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for cell in row.cells %}<td data-label="{{ cell.label }}">
+          {% if cell.value is True %}<span class="badge badge-success">Yes</span>{% elif cell.value is False %}<span class="badge badge-muted">No</span>{% else %}{{ cell.value|default:"—" }}{% endif %}
+        </td>{% endfor %}
+        <td data-label="Actions">
+          {% if can_manage %}
+          <div class="row-actions">
+            <a href="{% url 'admin_console:edit' entry.slug row.obj.pk %}" title="Edit"><button type="button"><i class="fa-solid fa-pen"></i></button></a>
+            {% if entry.can_delete %}
+            <a href="{% url 'admin_console:delete' entry.slug row.obj.pk %}" title="Delete"><button type="button" class="danger"><i class="fa-solid fa-trash"></i></button></a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="{{ entry.list_fields|length|add:1 }}" style="text-align:center;color:var(--muted);">No {{ entry.label|lower }} yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include "admin_console/_pagination.html" %}
+{% endblock %}

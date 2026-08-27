@@ -1,0 +1,15 @@
+{% extends "admin_console/base.html" %}
+{% block title %}Delete {{ entry.singular }} — Console{% endblock %}
+{% block page_title %}{{ entry.label }}{% endblock %}
+
+{% block console_content %}
+<div class="panel" style="max-width:520px;">
+  <h3 style="margin-bottom:10px;">Delete this {{ entry.singular|lower }}?</h3>
+  <p style="color:var(--muted);margin-bottom:20px;">"<strong>{{ instance }}</strong>" will be permanently deleted. This cannot be undone.</p>
+  <form method="post" style="display:flex;gap:10px;">
+    {% csrf_token %}
+    <a href="{% url 'admin_console:list' entry.slug %}" class="btn btn-outline">Cancel</a>
+    <button type="submit" class="btn" style="background:var(--danger);color:#fff;">Delete</button>
+  </form>
+</div>
+{% endblock %}

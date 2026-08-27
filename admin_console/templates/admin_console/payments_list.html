@@ -1,0 +1,48 @@
+{% extends "admin_console/base.html" %}
+{% load humanize %}
+{% block title %}Payments — Console{% endblock %}
+{% block page_title %}Payments{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head"><div><h1>Application Fee Payments</h1></div></div>
+
+<form method="get" class="filter-bar">
+  <div class="p-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="q" value="{{ q }}" placeholder="Search reference or application number..."></div>
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All Status</option>
+    {% for value, label in status_choices %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+  {% if q or status %}<a href="{% url 'admin_console:payments_list' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+</form>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr><th>Reference</th><th>Application</th><th>Amount</th><th>Gateway</th><th>Status</th><th>Paid At</th><th></th></tr></thead>
+    <tbody>
+      {% for pay in page_obj %}
+      <tr>
+        <td data-label="Reference">{{ pay.reference }}</td>
+        <td data-label="Application"><a href="{% url 'admin_console:application_detail' pay.invoice.application.pk %}">{{ pay.invoice.application.application_number }}</a></td>
+        <td data-label="Amount">₦{{ pay.amount|floatformat:2|intcomma }}</td>
+        <td data-label="Gateway">{{ pay.get_gateway_display }}</td>
+        <td data-label="Status"><span class="badge {% if pay.status == 'success' %}badge-success{% elif pay.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">{{ pay.get_status_display }}</span></td>
+        <td data-label="Paid At">{{ pay.paid_at|date:"d M Y H:i"|default:"—" }}</td>
+        <td data-label="Actions">
+          {% if pay.status == 'pending' %}
+          <form method="post" action="{% url 'admin_console:payment_check_status' pay.pk %}">
+            {% csrf_token %}<input type="hidden" name="qs" value="{{ querystring }}">
+            <button type="submit" class="btn btn-outline btn-sm">Check Status</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center;color:var(--muted);">No payments yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include "admin_console/_pagination.html" %}
+{% endblock %}

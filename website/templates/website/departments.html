@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Departments — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Departments</span></div>
+    <h1>Our Academic Departments</h1>
+    <p>Specialised departments delivering focused, practical training across the health sciences.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="dept-grid">
+      {% for d in departments %}
+      <div class="dept-card reveal">
+        <div class="feature-icon"><i class="fa-solid {{ d.icon }}"></i></div>
+        <h3>{{ d.name }}</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin-bottom:8px;">{{ d.description }}</p>
+        <ul>{% for p in d.programmes.all %}<li>{{ p.name }}</li>{% endfor %}</ul>
+        <a href="{% url 'website:programmes' %}">View Programmes <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-building-columns"></i><h4>Departments coming soon</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

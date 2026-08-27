@@ -1,0 +1,28 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Fees & Payments — Student Portal{% endblock %}
+{% block page_title %}Fees &amp; Payments{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Fees &amp; Payments</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div></div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Fee History</h3></div>
+  {% for row in rows %}
+  <a href="{% url 'students:fee_detail' row.session %}" class="list-row" style="text-decoration:none;color:inherit;">
+    <div class="list-row-time">{{ row.session }}</div>
+    <div class="list-row-body">
+      <strong>{{ row.session }}</strong>
+      <span>
+        {% if row.is_paid %}Paid in full
+        {% elif row.registration_open %}Unpaid — click to pay
+        {% else %}Unpaid — payment window closed{% endif %}
+      </span>
+    </div>
+    <span class="badge {% if row.is_paid %}badge-success{% elif row.registration_open %}badge-warning{% else %}badge-danger{% endif %}">
+      {% if row.is_paid %}Paid{% elif row.registration_open %}Pay Now{% else %}Closed{% endif %}
+    </span>
+  </a>
+  {% empty %}
+  <p style="color:var(--muted);font-size:13.5px;">No fee records yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

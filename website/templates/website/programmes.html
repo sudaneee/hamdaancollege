@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Programmes — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Programmes</span></div>
+    <h1>Academic Programmes</h1>
+    <p>National Diploma, Professional Diploma and Professional Certification programmes across health, science and technology disciplines.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="tabs reveal">
+      <a href="{% url 'website:programmes' %}" class="tab-btn {% if active_category == 'All' %}active{% endif %}">All Programmes</a>
+      {% for value, label in categories %}
+      <a href="?category={{ value }}" class="tab-btn {% if active_category == value %}active{% endif %}">{{ label }}s</a>
+      {% endfor %}
+    </div>
+    <div class="programme-grid">
+      {% for p in programmes %}
+      <div class="programme-card reveal">
+        <div class="programme-card-top">
+          <span class="programme-cat">{{ p.get_category_display }}</span>
+          <h3>{{ p.name }}</h3>
+          <div class="programme-meta">
+            <span><i class="fa-regular fa-clock"></i> {{ p.duration }}</span>
+            <span><i class="fa-solid fa-building-columns"></i> {{ p.department.name|default:"General Studies" }}</span>
+          </div>
+        </div>
+        <div class="programme-card-body">
+          <p>{{ p.description|truncatewords:22 }}</p>
+          <div class="programme-card-actions">
+            <a href="{{ p.get_absolute_url }}" class="btn btn-outline btn-sm">View Programme</a>
+            <a href="{% url 'admissions:apply' %}?programme={{ p.id }}" class="btn btn-primary btn-sm">Apply Now</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-inbox"></i><h4>No programmes found</h4></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if featured_programme %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="featured-programme reveal">
+      <div class="featured-programme-media">
+        <img src="{% if featured_programme.image %}{{ featured_programme.image.url }}{% else %}https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ featured_programme.name }}">
+      </div>
+      <div class="featured-programme-body">
+        <span class="eyebrow">Featured Programme</span>
+        <h3>{{ featured_programme.name }}</h3>
+        <p style="color:rgba(255,255,255,0.82);margin-bottom:16px;">{{ featured_programme.description|truncatewords:35 }}</p>
+        <ul class="featured-list">
+          {% for career in featured_programme.career_list|slice:":4" %}
+          <li><i class="fa-solid fa-check"></i> {{ career }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ featured_programme.get_absolute_url }}" class="btn btn-accent">Explore Programme</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

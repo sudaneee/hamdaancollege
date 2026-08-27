@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Admissions Closed — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:700px;">
+    <div class="form-card">
+      <div class="success-panel">
+        <div class="success-icon"><i class="fa-solid fa-circle-info"></i></div>
+        <h2 style="font-size:24px;margin-bottom:8px;">Admissions Are Currently Closed</h2>
+        <p style="color:var(--muted);">There is no active admission cycle accepting applications right now. Please check back later, or contact the Admissions Office for more information.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;">
+          <a href="{% url 'website:contact' %}" class="btn btn-outline">Contact Admissions</a>
+          <a href="{% url 'website:home' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

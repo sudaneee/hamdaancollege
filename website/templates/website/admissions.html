@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admissions — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Admissions</span></div>
+    <h1>Admissions — {{ site_settings.admission_session }} Academic Session</h1>
+    <p>Everything you need to know to apply and join {{ site_settings.site_name }} this session.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="admission-banner reveal">
+      <span class="eyebrow" style="background:rgba(255,255,255,0.15);color:var(--accent);">Admissions</span>
+      <h2>Your Future Starts Here</h2>
+      <p style="color:rgba(255,255,255,0.85);">{{ site_settings.admission_session }} Academic Session</p>
+      <div class="admission-status"><span class="dot"></span> Admission Status: {% if site_settings.admission_open %}OPEN{% else %}CLOSED{% endif %}</div>
+      <div><a href="{% url 'admissions:apply' %}" class="btn btn-accent btn-lg mt-1">Start Application</a></div>
+      <div class="steps-grid">
+        <div class="step-item"><div class="step-num">1</div><h4>Choose a Programme</h4><p>Explore our departments and select the right fit for your career.</p></div>
+        <div class="step-item"><div class="step-num">2</div><h4>Complete Application</h4><p>Fill out the online application form with accurate information.</p></div>
+        <div class="step-item"><div class="step-num">3</div><h4>Submit Documents</h4><p>Upload your credentials and supporting identification documents.</p></div>
+        <div class="step-item"><div class="step-num">4</div><h4>Application Review</h4><p>Our admissions team reviews your application and documents.</p></div>
+        <div class="step-item"><div class="step-num">5</div><h4>Receive Decision</h4><p>Get notified of your admission decision by phone or email.</p></div>
+        <div class="step-item"><div class="step-num">6</div><h4>Complete Registration</h4><p>Finalise registration and begin your academic journey with us.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Requirements</span>
+      <h2>Admission Requirements</h2>
+      <p>General entry requirements applicable across most programmes.</p>
+    </div>
+    <div class="requirements-box reveal">
+      <h4>General Requirement</h4>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">{{ site_settings.admission_requirement_note }}</p>
+      <ul class="req-list">
+        <li><i class="fa-solid fa-check"></i> English Language</li>
+        <li><i class="fa-solid fa-check"></i> Mathematics</li>
+        <li><i class="fa-solid fa-check"></i> Chemistry</li>
+        <li><i class="fa-solid fa-check"></i> Physics</li>
+        <li><i class="fa-solid fa-check"></i> Biology</li>
+      </ul>
+      <span class="note-tag"><i class="fa-solid fa-circle-info"></i> {{ site_settings.admission_requirement_disclaimer }}</span>
+    </div>
+
+    <div class="feature-grid mt-3">
+      <div class="feature-card reveal"><div class="feature-icon"><i class="fa-solid fa-file-circle-check"></i></div><h3>Application Fee</h3><p>A non-refundable application processing fee is required to complete submission.</p></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="feature-icon"><i class="fa-solid fa-calendar-days"></i></div><h3>Application Deadline</h3><p>Applications close once available slots for the session are filled — apply early.</p></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="feature-icon"><i class="fa-solid fa-headset"></i></div><h3>Need Help?</h3><p>Our admissions team is available to guide you through every step of the process.</p></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

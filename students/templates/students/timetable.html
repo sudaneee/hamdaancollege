@@ -1,0 +1,24 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Timetable — Student Portal{% endblock %}
+{% block page_title %}Timetable{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Weekly Timetable</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div></div>
+<div class="panel">
+  {% if rows %}
+  <div class="timetable" style="grid-template-columns:80px repeat({{ days|length }},1fr);">
+    <div></div>
+    {% for day in days %}<div class="tt-head">{{ day }}</div>{% endfor %}
+    {% for row in rows %}
+      <div class="tt-time">{{ row.time|time:"g:i A" }}</div>
+      {% for entry in row.cells %}
+        <div class="tt-cell">
+          {% if entry %}<div class="tt-card"><strong>{{ entry.course.title }}</strong><span>{{ entry.lecturer_name }}</span><span>{{ entry.venue }}</span></div>{% endif %}
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color:var(--muted);font-size:13.5px;text-align:center;padding:20px 0;">No timetable has been published for your programme yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

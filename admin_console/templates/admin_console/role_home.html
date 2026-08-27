@@ -1,0 +1,43 @@
+{% extends "admin_console/base.html" %}
+{% block title %}Console — {{ site_settings.site_name }}{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>Welcome, {{ request.user.first_name|default:request.user.username }}</h1>
+  <p>You have restricted access to the console — only the sections your role covers are shown below.</p></div>
+</div>
+
+{% if dedicated_links %}
+<div class="panel">
+  <div class="panel-head"><h3>Sections</h3></div>
+  <div class="stat-cards" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+    {% for link in dedicated_links %}
+    <a href="{{ link.url }}" class="stat-card" style="text-decoration:none;">
+      <div class="stat-card-top"><div class="stat-card-icon blue"><i class="{{ link.icon }}"></i></div></div>
+      <strong style="font-size:15px;">{{ link.label }}</strong>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% for category, entries in categories.items %}
+<div class="panel">
+  <div class="panel-head"><h3>{{ category }}</h3></div>
+  <div class="stat-cards" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+    {% for entry, count in entries %}
+    <a href="{% url 'admin_console:list' entry.slug %}" class="stat-card" style="text-decoration:none;">
+      <div class="stat-card-top"><div class="stat-card-icon green"><i class="{{ entry.icon }}"></i></div></div>
+      <strong style="font-size:15px;">{{ entry.label }}</strong>
+      <span class="stat-label">{{ count }} record{{ count|pluralize }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% empty %}
+{% if not dedicated_links %}
+<div class="panel"><p style="color:var(--muted);">Your role doesn't have any sections assigned yet. Contact a super admin.</p></div>
+{% endif %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Support — Student Portal{% endblock %}
+{% block page_title %}Support{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Support</h1><p>Need help? Send a message to our student support team.</p></div></div>
+<div class="p-grid-2">
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>Subject</label>
+        <select name="subject">
+          {% for value, label in subject_choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Message</label><textarea name="message" placeholder="Describe your issue or question..."></textarea></div>
+      <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
+    </form>
+  </div>
+  <div>
+    <div class="panel"><div class="panel-head"><h3>Contact Admissions Office</h3></div>
+      <div class="review-row"><span>Phone</span><span>{{ site_settings.phone_1 }}</span></div>
+      <div class="review-row"><span>Email</span><span>{{ site_settings.email }}</span></div>
+      <div class="review-row"><span>Office Hours</span><span>{{ site_settings.office_hours }}</span></div>
+    </div>
+    <div class="panel"><div class="panel-head"><h3>Frequently Asked</h3></div>
+      <p style="font-size:13.5px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);">How do I check my outstanding fees? Visit the Fees &amp; Payments section on your dashboard.</p>
+      <p style="font-size:13.5px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);">When are results published? Results are released once entered by the academic office.</p>
+      <p style="font-size:13.5px;color:var(--muted);padding:8px 0;">How do I download my documents? Visit the Documents section and click Download on any item.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

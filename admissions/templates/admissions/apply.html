@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Complete Your Application — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Apply Now</span></div>
+    <h1>Complete Your Admission Application</h1>
+    <p>Application No: <strong>{{ application.application_number }}</strong> — {{ application.cycle.session }} Academic Session. Your application fee has been paid — fill in the sections below to submit.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <div class="form-card" id="applyFormCard">
+      <div class="stepper" id="applyStepper"></div>
+
+      <form id="applyForm" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- STEP 1: Personal -->
+        <div class="form-step active" data-step="1">
+          <h3 style="margin-bottom:18px;">Section A — Personal Information</h3>
+          <div class="form-row">
+            <div class="field {% if form.surname.errors %}error{% endif %}" {% if form.surname.errors %}data-field-error{% endif %}><label for="{{ form.surname.id_for_label }}">Surname <span class="req">*</span></label>{{ form.surname }}<span class="field-error">{{ form.surname.errors|join:", " }}</span></div>
+            <div class="field {% if form.first_name.errors %}error{% endif %}" {% if form.first_name.errors %}data-field-error{% endif %}><label for="{{ form.first_name.id_for_label }}">First Name <span class="req">*</span></label>{{ form.first_name }}<span class="field-error">{{ form.first_name.errors|join:", " }}</span></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="{{ form.middle_name.id_for_label }}">Middle Name</label>{{ form.middle_name }}</div>
+            <div class="field {% if form.gender.errors %}error{% endif %}" {% if form.gender.errors %}data-field-error{% endif %}><label for="{{ form.gender.id_for_label }}">Gender <span class="req">*</span></label>{{ form.gender }}<span class="field-error">{{ form.gender.errors|join:", " }}</span></div>
+          </div>
+          <div class="form-row">
+            <div class="field {% if form.date_of_birth.errors %}error{% endif %}" {% if form.date_of_birth.errors %}data-field-error{% endif %}><label for="{{ form.date_of_birth.id_for_label }}">Date of Birth <span class="req">*</span></label>{{ form.date_of_birth }}<span class="field-error">{{ form.date_of_birth.errors|join:", " }}</span></div>
+            <div class="field"><label for="{{ form.nationality.id_for_label }}">Nationality</label>{{ form.nationality }}</div>
+          </div>
+          <div class="form-row">
+            <div class="field {% if form.state_of_origin.errors %}error{% endif %}" {% if form.state_of_origin.errors %}data-field-error{% endif %}><label for="{{ form.state_of_origin.id_for_label }}">State of Origin <span class="req">*</span></label>{{ form.state_of_origin }}<span class="field-error">{{ form.state_of_origin.errors|join:", " }}</span></div>
+            <div class="field {% if form.lga.errors %}error{% endif %}" {% if form.lga.errors %}data-field-error{% endif %}><label for="{{ form.lga.id_for_label }}">LGA <span class="req">*</span></label>{{ form.lga }}<span class="field-error">{{ form.lga.errors|join:", " }}</span></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="{{ form.marital_status.id_for_label }}">Marital Status</label>{{ form.marital_status }}</div>
+            <div class="field"><label for="{{ form.religion.id_for_label }}">Religion</label>{{ form.religion }}</div>
+          </div>
+          <div class="field {% if form.address.errors %}error{% endif %}" {% if form.address.errors %}data-field-error{% endif %}><label for="{{ form.address.id_for_label }}">Home Address <span class="req">*</span></label>{{ form.address }}<span class="field-error">{{ form.address.errors|join:", " }}</span></div>
+          <div class="form-row">
+            <div class="field {% if form.phone.errors %}error{% endif %}" {% if form.phone.errors %}data-field-error{% endif %}><label for="{{ form.phone.id_for_label }}">Phone Number <span class="req">*</span></label>{{ form.phone }}<span class="field-error">{{ form.phone.errors|join:", " }}</span></div>
+            <div class="field"><label for="{{ form.alt_phone.id_for_label }}">Alternative Phone</label>{{ form.alt_phone }}</div>
+          </div>
+          <div class="field {% if form.email.errors %}error{% endif %}" {% if form.email.errors %}data-field-error{% endif %}><label for="{{ form.email.id_for_label }}">Email Address <span class="req">*</span></label>{{ form.email }}<span class="field-error">{{ form.email.errors|join:", " }}</span></div>
+          <div class="flex-between mt-2"><span></span><button type="button" class="btn btn-primary" data-next>Continue <i class="fa-solid fa-arrow-right"></i></button></div>
+        </div>
+
+        <!-- STEP 2: Guardian / Next of Kin -->
+        <div class="form-step" data-step="2">
+          <h3 style="margin-bottom:18px;">Section B — Next of Kin / Guardian Information</h3>
+          <div class="field {% if form.guardian_name.errors %}error{% endif %}" {% if form.guardian_name.errors %}data-field-error{% endif %}><label for="{{ form.guardian_name.id_for_label }}">Full Name <span class="req">*</span></label>{{ form.guardian_name }}<span class="field-error">{{ form.guardian_name.errors|join:", " }}</span></div>
+          <div class="form-row">
+            <div class="field {% if form.guardian_relationship.errors %}error{% endif %}" {% if form.guardian_relationship.errors %}data-field-error{% endif %}><label for="{{ form.guardian_relationship.id_for_label }}">Relationship <span class="req">*</span></label>{{ form.guardian_relationship }}<span class="field-error">{{ form.guardian_relationship.errors|join:", " }}</span></div>
+            <div class="field"><label for="{{ form.guardian_occupation.id_for_label }}">Occupation</label>{{ form.guardian_occupation }}</div>
+          </div>
+          <div class="field {% if form.guardian_address.errors %}error{% endif %}" {% if form.guardian_address.errors %}data-field-error{% endif %}><label for="{{ form.guardian_address.id_for_label }}">Address <span class="req">*</span></label>{{ form.guardian_address }}<span class="field-error">{{ form.guardian_address.errors|join:", " }}</span></div>
+          <div class="field {% if form.guardian_phone.errors %}error{% endif %}" {% if form.guardian_phone.errors %}data-field-error{% endif %}><label for="{{ form.guardian_phone.id_for_label }}">Phone Number <span class="req">*</span></label>{{ form.guardian_phone }}<span class="field-error">{{ form.guardian_phone.errors|join:", " }}</span></div>
+          <div class="flex-between mt-2">
+            <button type="button" class="btn btn-outline" data-prev><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" data-next>Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Programme -->
+        <div class="form-step" data-step="3">
+          <h3 style="margin-bottom:18px;">Section C — Programme Details</h3>
+          <div class="field {% if form.programme.errors %}error{% endif %}" {% if form.programme.errors %}data-field-error{% endif %}>
+            <label for="{{ form.programme.id_for_label }}">Programme <span class="req">*</span></label>
+            {{ form.programme }}<span class="field-error">{{ form.programme.errors|join:", " }}</span>
+          </div>
+          <div class="flex-between mt-2">
+            <button type="button" class="btn btn-outline" data-prev><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" data-next>Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Education + O'Level -->
+        <div class="form-step" data-step="4">
+          <h3 style="margin-bottom:18px;">Section D — Educational Background</h3>
+          <div class="field {% if form.previous_school.errors %}error{% endif %}" {% if form.previous_school.errors %}data-field-error{% endif %}><label for="{{ form.previous_school.id_for_label }}">School Attended <span class="req">*</span></label>{{ form.previous_school }}<span class="field-error">{{ form.previous_school.errors|join:", " }}</span></div>
+          <div class="form-row">
+            <div class="field {% if form.qualification_obtained.errors %}error{% endif %}" {% if form.qualification_obtained.errors %}data-field-error{% endif %}><label for="{{ form.qualification_obtained.id_for_label }}">Qualification Obtained <span class="req">*</span></label>{{ form.qualification_obtained }}<span class="field-error">{{ form.qualification_obtained.errors|join:", " }}</span></div>
+            <div class="field {% if form.qualification_year.errors %}error{% endif %}" {% if form.qualification_year.errors %}data-field-error{% endif %}><label for="{{ form.qualification_year.id_for_label }}">Year <span class="req">*</span></label>{{ form.qualification_year }}<span class="field-error">{{ form.qualification_year.errors|join:", " }}</span></div>
+          </div>
+
+          <h3 style="margin:24px 0 12px;">Section E — O'Level Results</h3>
+          <p style="color:var(--muted);font-size:13.5px;margin-bottom:14px;">Five (5) O'Level credit passes including English Language, Mathematics, Chemistry, Physics and Biology.</p>
+          <div class="olevel-table" style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:8px;align-items:center;">
+            <strong>Subject</strong><strong>Grade</strong><strong>Exam Body</strong><strong>Year</strong>
+
+            <span>English Language</span>{{ form.english_grade }}{{ form.english_exam_body }}{{ form.english_year }}
+            <span>Mathematics</span>{{ form.maths_grade }}{{ form.maths_exam_body }}{{ form.maths_year }}
+            <span>Chemistry</span>{{ form.chemistry_grade }}{{ form.chemistry_exam_body }}{{ form.chemistry_year }}
+            <span>Physics</span>{{ form.physics_grade }}{{ form.physics_exam_body }}{{ form.physics_year }}
+            <span>Biology</span>{{ form.biology_grade }}{{ form.biology_exam_body }}{{ form.biology_year }}
+          </div>
+
+          <div class="flex-between mt-2">
+            <button type="button" class="btn btn-outline" data-prev><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" data-next>Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Documents -->
+        <div class="form-step" data-step="5">
+          <h3 style="margin-bottom:6px;">Upload Documents</h3>
+          <p style="color:var(--muted);font-size:13.5px;margin-bottom:18px;">Accepted formats: JPG, PNG, PDF.</p>
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+            <label class="upload-box">
+              {{ form.passport_photo }}
+              <i class="fa-solid fa-cloud-arrow-up"></i><strong>Passport Photograph</strong>
+              <span class="upload-status" style="display:block;color:var(--muted);font-size:12px;">Click to upload</span>
+            </label>
+            <label class="upload-box">
+              {{ form.olevel_result }}
+              <i class="fa-solid fa-cloud-arrow-up"></i><strong>O'Level Result</strong>
+              <span class="upload-status" style="display:block;color:var(--muted);font-size:12px;">Click to upload</span>
+            </label>
+            <label class="upload-box">
+              {{ form.birth_certificate }}
+              <i class="fa-solid fa-cloud-arrow-up"></i><strong>Birth Certificate</strong>
+              <span class="upload-status" style="display:block;color:var(--muted);font-size:12px;">Click to upload</span>
+            </label>
+            <label class="upload-box">
+              {{ form.identification_document }}
+              <i class="fa-solid fa-cloud-arrow-up"></i><strong>Identification Document</strong>
+              <span class="upload-status" style="display:block;color:var(--muted);font-size:12px;">Click to upload</span>
+            </label>
+          </div>
+          <div class="flex-between mt-2">
+            <button type="button" class="btn btn-outline" data-prev><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="button" class="btn btn-primary" data-next>Continue <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 6: Declaration + Review & Submit -->
+        <div class="form-step" data-step="6">
+          <h3 style="margin-bottom:18px;">Section F — Declaration</h3>
+          <label class="field" style="display:flex;align-items:flex-start;gap:10px;">
+            {{ form.declaration_accepted }}
+            <span>I hereby declare that the information provided in this application form is true and correct to the best of my knowledge. I understand that any false information may lead to disqualification or withdrawal of admission.</span>
+          </label>
+          <span class="field-error">{{ form.declaration_accepted.errors|join:", " }}</span>
+
+          <h3 style="margin:24px 0 18px;">Review Your Application</h3>
+          <div id="reviewSummary"></div>
+          <div class="flex-between mt-2">
+            <button type="button" class="btn btn-outline" data-prev><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="submit" class="btn btn-accent btn-lg" id="submitAppBtn">Submit Application <i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'website/js/apply.js' %}"></script>
+{% endblock %}

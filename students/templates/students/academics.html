@@ -1,0 +1,16 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Academic Overview — Student Portal{% endblock %}
+{% block page_title %}Academic Overview{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Academic Overview</h1><p>Your academic standing across the current session.</p></div></div>
+<div class="stat-cards">
+  <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon green"><i class="fa-solid fa-chart-line"></i></div></div><strong>{{ student.gpa }}</strong><span class="stat-label">Current GPA</span></div>
+  <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon blue"><i class="fa-solid fa-graduation-cap"></i></div></div><strong>{{ student.cgpa }}</strong><span class="stat-label">Cumulative CGPA</span></div>
+  <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon gold"><i class="fa-solid fa-layer-group"></i></div></div><strong>{{ student.level }}</strong><span class="stat-label">Current Level</span></div>
+  <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon red"><i class="fa-solid fa-calendar"></i></div></div><strong>{{ student.session }}</strong><span class="stat-label">Academic Session</span></div>
+</div>
+<div class="panel">
+  <div class="panel-head"><h3>GPA is out of 4.0</h3></div>
+  <p style="color:var(--muted);font-size:13.5px;">Your GPA is calculated from this session's results; your CGPA is the cumulative average across every session on record. See the Results page for the full breakdown per course.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Us — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>About</span></div>
+    <h1>About {{ site_settings.site_name }}</h1>
+    <p>{{ site_settings.tagline }}</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container about-grid">
+    <div class="about-media reveal">
+      <img src="{% if about_content.about_image %}{{ about_content.about_image.url }}{% else %}https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=700&q=80{% endif %}" alt="{{ site_settings.site_name }} campus">
+    </div>
+    <div class="reveal reveal-delay-1">
+      <span class="eyebrow">Who We Are</span>
+      <h2 style="font-size:clamp(26px,3.6vw,36px);margin-bottom:14px;">Committed to Competence, Ethics and Innovation</h2>
+      <div style="color:var(--muted);font-size:16px;">{{ about_content.who_we_are|safe }}</div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="mv-grid">
+      <div class="mv-card reveal">
+        <h4><i class="fa-solid fa-bullseye" style="color:var(--primary);"></i>&nbsp; Our Mission</h4>
+        <div style="color:var(--muted);">{{ about_content.mission|safe }}</div>
+      </div>
+      <div class="mv-card reveal reveal-delay-1">
+        <h4><i class="fa-solid fa-eye" style="color:var(--primary);"></i>&nbsp; Our Vision</h4>
+        <div style="color:var(--muted);">{{ about_content.vision|safe }}</div>
+      </div>
+    </div>
+    <div class="section-head reveal mt-3">
+      <span class="eyebrow">What Drives Us</span>
+      <h2>Our Core Values</h2>
+    </div>
+    <div class="value-grid value-grid-6">
+      {% for value in core_values %}
+      <div class="value-chip reveal reveal-delay-{{ forloop.counter }}"><i class="fa-solid {{ value.icon }}"></i> {{ value.title }}</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Leadership</span>
+      <h2>A Message From Our Principal</h2>
+    </div>
+    <div class="principal-card reveal">
+      <div class="principal-photo">
+        <img src="{% if about_content.principal_photo %}{{ about_content.principal_photo.url }}{% else %}https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=500&q=80{% endif %}" alt="{{ about_content.principal_name }}">
+      </div>
+      <div>
+        <blockquote>{{ about_content.principal_message|safe }}</blockquote>
+        <strong>{{ about_content.principal_name }}</strong>
+        <span>{{ about_content.principal_title }}, {{ site_settings.site_name }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Our Departments</span>
+      <h2>Six Departments, One Mission</h2>
+      <p>Explore the academic departments driving practical, career-focused health science training.</p>
+    </div>
+    <div class="dept-grid">
+      {% for d in departments %}
+      <div class="dept-card reveal">
+        <div class="feature-icon"><i class="fa-solid {{ d.icon }}"></i></div>
+        <h3>{{ d.name }}</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin-bottom:8px;">{{ d.description }}</p>
+        <ul>{% for p in d.programmes.all|slice:":4" %}<li>{{ p.name }}</li>{% endfor %}</ul>
+        <a href="{% url 'website:programmes' %}">View Department <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

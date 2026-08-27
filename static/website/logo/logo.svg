@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">Hamdaan College Crest Logo</title>
+  <defs>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B5D3B"/>
+      <stop offset="100%" stop-color="#14285C"/>
+    </linearGradient>
+  </defs>
+  <!-- Laurel ring -->
+  <g stroke="#C99A2E" stroke-width="2" fill="none" opacity="0.9">
+    <path d="M30 70 C 10 100, 10 140, 35 165" />
+    <path d="M170 70 C 190 100, 190 140, 165 165" />
+    <path d="M35 90 C 22 100, 22 115, 33 122" />
+    <path d="M35 110 C 22 120, 22 135, 33 142" />
+    <path d="M165 90 C 178 100, 178 115, 167 122" />
+    <path d="M165 110 C 178 120, 178 135, 167 142" />
+  </g>
+  <!-- Shield -->
+  <path d="M100 20 L165 42 L165 100 C165 145 137 175 100 190 C63 175 35 145 35 100 L35 42 Z"
+        fill="url(#shieldGrad)" stroke="#C99A2E" stroke-width="3"/>
+  <!-- Inner pillars: caduceus, flask, book, gear -->
+  <g fill="#F7F9F8">
+    <!-- book -->
+    <path d="M55 120 L95 112 L95 150 L55 158 Z" opacity="0.95"/>
+    <path d="M145 120 L105 112 L105 150 L145 158 Z" opacity="0.95"/>
+    <line x1="100" y1="110" x2="100" y2="152" stroke="#C99A2E" stroke-width="2"/>
+    <!-- flask -->
+    <path d="M92 55 L92 72 L78 96 C75 101 78 106 84 106 L116 106 C122 106 125 101 122 96 L108 72 L108 55 Z"
+          fill="none" stroke="#F7F9F8" stroke-width="3"/>
+    <line x1="88" y1="55" x2="112" y2="55" stroke="#F7F9F8" stroke-width="3"/>
+    <circle cx="92" cy="90" r="2.5" fill="#C99A2E"/>
+    <circle cx="103" cy="97" r="2" fill="#C99A2E"/>
+    <circle cx="98" cy="88" r="1.8" fill="#C99A2E"/>
+    <!-- caduceus wings -->
+    <path d="M60 60 C 50 55, 45 62, 50 68 C 56 74, 66 70, 66 62 Z" fill="#C99A2E"/>
+    <path d="M140 60 C 150 55, 155 62, 150 68 C 144 74, 134 70, 134 62 Z" fill="#C99A2E"/>
+    <!-- gear (bottom center) -->
+    <g transform="translate(100,168)">
+      <circle r="10" fill="none" stroke="#C99A2E" stroke-width="3"/>
+      <circle r="3.5" fill="#C99A2E"/>
+      <g stroke="#C99A2E" stroke-width="3">
+        <line x1="0" y1="-13" x2="0" y2="-9"/>
+        <line x1="0" y1="13" x2="0" y2="9"/>
+        <line x1="-13" y1="0" x2="-9" y2="0"/>
+        <line x1="13" y1="0" x2="9" y2="0"/>
+        <line x1="-9" y1="-9" x2="-6.5" y2="-6.5"/>
+        <line x1="9" y1="9" x2="6.5" y2="6.5"/>
+        <line x1="-9" y1="9" x2="-6.5" y2="6.5"/>
+        <line x1="9" y1="-9" x2="6.5" y2="-6.5"/>
+      </g>
+    </g>
+  </g>
+  <!-- Ribbon text -->
+  <path id="ribbon" d="M20 178 L100 195 L180 178 L180 192 L100 200 L20 192 Z" fill="#0B5D3B" stroke="#C99A2E" stroke-width="1.5"/>
+</svg>

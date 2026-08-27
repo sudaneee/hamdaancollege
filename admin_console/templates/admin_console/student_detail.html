@@ -1,0 +1,84 @@
+{% extends "admin_console/base.html" %}
+{% load humanize %}
+{% block title %}{{ student.student_id }} — Console{% endblock %}
+{% block page_title %}Student Detail{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{{ student.full_name }}</h1><p>{{ student.student_id }}</p></div>
+  <a href="{% url 'admin_console:students_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Students</a>
+</div>
+
+<div class="p-grid-2">
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>Contact</h3></div>
+      <div class="review-row"><span>Email</span><span>{{ student.email|default:student.user.email }}</span></div>
+      <div class="review-row"><span>Phone</span><span>{{ student.phone|default:"—" }}</span></div>
+      <div class="review-row"><span>Address</span><span>{{ student.address|default:"—" }}</span></div>
+      <div class="review-row"><span>State / LGA</span><span>{{ student.state|default:"—" }} / {{ student.lga|default:"—" }}</span></div>
+      <div class="review-row"><span>Gender</span><span>{{ student.gender|default:"—" }}</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Results — {{ student.session }}</h3></div>
+      <div class="table-wrap responsive-cards">
+        <table class="data-table">
+          <thead><tr><th>Course</th><th>Score</th><th>Grade</th><th>Session</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for r in results %}
+            <tr><td data-label="Course">{{ r.course.code }}</td><td data-label="Score">{{ r.score }}</td><td data-label="Grade">{{ r.grade }}</td><td data-label="Session">{{ r.session }}</td>
+            <td data-label="Status"><span class="badge {% if r.is_published %}badge-success{% else %}badge-warning{% endif %}">{% if r.is_published %}Published{% else %}Draft{% endif %}</span></td></tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;color:var(--muted);">No results yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Assignment Submissions</h3><a href="{% url 'admin_console:submissions_list' %}">All Submissions</a></div>
+      {% for s in submissions %}
+      <div class="list-row">
+        <div class="list-row-body"><strong>{{ s.assignment.title }}</strong><span>{{ s.assignment.course.code }} &middot; {{ s.submitted_at|date:"d M Y H:i" }}</span></div>
+        {% if s.file %}<a href="{{ s.file.url }}" target="_blank" class="btn btn-outline btn-sm">Download</a>{% endif %}
+      </div>
+      {% empty %}
+      <p style="color:var(--muted);font-size:13px;">No submissions yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>{% if can_edit %}Edit Record{% else %}Record{% endif %}</h3></div>
+      {% if can_edit %}
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="field"><label>{{ field.label }}</label>{{ field }}</div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+      </form>
+      {% else %}
+      <div class="review-row"><span>Programme</span><span>{{ student.programme }}</span></div>
+      <div class="review-row"><span>Level</span><span>{{ student.level }}</span></div>
+      <div class="review-row"><span>Session</span><span>{{ student.session }}</span></div>
+      <div class="review-row"><span>Status</span><span>{{ student.get_status_display }}</span></div>
+      <p style="color:var(--muted);font-size:12.5px;margin-top:10px;">Your role has read-only access to student records.</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Fee Invoice — {{ student.session }}</h3></div>
+      {% if invoice %}
+        <div class="review-row"><span>Amount</span><span>₦{{ invoice.amount|floatformat:2|intcomma }}</span></div>
+        <div class="review-row"><span>Status</span><span class="badge {% if invoice.is_paid %}badge-success{% else %}badge-danger{% endif %}">{{ invoice.get_status_display }}</span></div>
+      {% else %}
+        <p style="color:var(--muted);font-size:13px;">No invoice generated yet — one is created automatically the first time the student visits their Fees page.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

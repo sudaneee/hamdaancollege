@@ -1,0 +1,136 @@
+{% extends "admin_console/base.html" %}
+{% load humanize %}
+{% block title %}{{ application.application_number }} — Console{% endblock %}
+{% block page_title %}Application Detail{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{{ application.full_name }}</h1><p>{{ application.application_number }} — {{ application.cycle.session }}</p></div>
+  <a href="{% url 'admin_console:applications_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Applications</a>
+</div>
+
+<div class="p-grid-2">
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>Section A — Personal Information</h3></div>
+      <div class="review-row"><span>Full Name</span><span>{{ application.full_name }}</span></div>
+      <div class="review-row"><span>Date of Birth</span><span>{{ application.date_of_birth|date:"d M Y" }}</span></div>
+      <div class="review-row"><span>Gender</span><span>{{ application.gender }}</span></div>
+      <div class="review-row"><span>Nationality</span><span>{{ application.nationality }}</span></div>
+      <div class="review-row"><span>State / LGA</span><span>{{ application.state_of_origin }} / {{ application.lga }}</span></div>
+      <div class="review-row"><span>Marital Status</span><span>{{ application.marital_status|default:"—" }}</span></div>
+      <div class="review-row"><span>Religion</span><span>{{ application.religion|default:"—" }}</span></div>
+      <div class="review-row"><span>Address</span><span>{{ application.address }}</span></div>
+      <div class="review-row"><span>Phone</span><span>{{ application.phone }} {% if application.alt_phone %}/ {{ application.alt_phone }}{% endif %}</span></div>
+      <div class="review-row"><span>Email</span><span>{{ application.email }}</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Section B — Next of Kin / Guardian</h3></div>
+      <div class="review-row"><span>Name</span><span>{{ application.guardian_name|default:"—" }}</span></div>
+      <div class="review-row"><span>Relationship</span><span>{{ application.guardian_relationship|default:"—" }}</span></div>
+      <div class="review-row"><span>Occupation</span><span>{{ application.guardian_occupation|default:"—" }}</span></div>
+      <div class="review-row"><span>Address</span><span>{{ application.guardian_address|default:"—" }}</span></div>
+      <div class="review-row"><span>Phone</span><span>{{ application.guardian_phone|default:"—" }}</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Section C — Programme</h3></div>
+      <div class="review-row"><span>Programme</span><span>{{ application.programme|default:"—" }}</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Section D — Educational Background</h3></div>
+      <div class="review-row"><span>School Attended</span><span>{{ application.previous_school|default:"—" }}</span></div>
+      <div class="review-row"><span>Qualification</span><span>{{ application.qualification_obtained|default:"—" }} ({{ application.qualification_year|default:"—" }})</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Section E — O'Level Results</h3></div>
+      <div class="table-wrap responsive-cards">
+        <table class="data-table">
+          <thead><tr><th>Subject</th><th>Grade</th><th>Exam Body</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Subject">English Language</td><td data-label="Grade">{{ application.english_grade|default:"—" }}</td><td data-label="Exam Body">{{ application.english_exam_body|default:"—" }}</td><td data-label="Year">{{ application.english_year|default:"—" }}</td></tr>
+            <tr><td data-label="Subject">Mathematics</td><td data-label="Grade">{{ application.maths_grade|default:"—" }}</td><td data-label="Exam Body">{{ application.maths_exam_body|default:"—" }}</td><td data-label="Year">{{ application.maths_year|default:"—" }}</td></tr>
+            <tr><td data-label="Subject">Chemistry</td><td data-label="Grade">{{ application.chemistry_grade|default:"—" }}</td><td data-label="Exam Body">{{ application.chemistry_exam_body|default:"—" }}</td><td data-label="Year">{{ application.chemistry_year|default:"—" }}</td></tr>
+            <tr><td data-label="Subject">Physics</td><td data-label="Grade">{{ application.physics_grade|default:"—" }}</td><td data-label="Exam Body">{{ application.physics_exam_body|default:"—" }}</td><td data-label="Year">{{ application.physics_year|default:"—" }}</td></tr>
+            <tr><td data-label="Subject">Biology</td><td data-label="Grade">{{ application.biology_grade|default:"—" }}</td><td data-label="Exam Body">{{ application.biology_exam_body|default:"—" }}</td><td data-label="Year">{{ application.biology_year|default:"—" }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Documents</h3></div>
+      <div class="doc-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="doc-card"><div class="doc-icon"><i class="fa-solid fa-id-badge"></i></div><h4>Passport Photo</h4>{% if application.passport_photo %}<a href="{{ application.passport_photo.url }}" target="_blank" class="btn btn-outline btn-sm">View</a>{% else %}<span style="color:var(--muted);font-size:12px;">Not uploaded</span>{% endif %}</div>
+        <div class="doc-card"><div class="doc-icon"><i class="fa-solid fa-file-lines"></i></div><h4>O'Level Result</h4>{% if application.olevel_result %}<a href="{{ application.olevel_result.url }}" target="_blank" class="btn btn-outline btn-sm">View</a>{% else %}<span style="color:var(--muted);font-size:12px;">Not uploaded</span>{% endif %}</div>
+        <div class="doc-card"><div class="doc-icon"><i class="fa-solid fa-baby"></i></div><h4>Birth Certificate</h4>{% if application.birth_certificate %}<a href="{{ application.birth_certificate.url }}" target="_blank" class="btn btn-outline btn-sm">View</a>{% else %}<span style="color:var(--muted);font-size:12px;">Not uploaded</span>{% endif %}</div>
+        <div class="doc-card"><div class="doc-icon"><i class="fa-solid fa-address-card"></i></div><h4>Identification</h4>{% if application.identification_document %}<a href="{{ application.identification_document.url }}" target="_blank" class="btn btn-outline btn-sm">View</a>{% else %}<span style="color:var(--muted);font-size:12px;">Not uploaded</span>{% endif %}</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>Status</h3><span class="badge {{ application.status_badge_class }}">{{ application.get_status_display }}</span></div>
+      {% if can_edit %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="field">
+          <label>Change Status</label>
+          <select name="status">
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if application.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update Status</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Student Enrollment</h3></div>
+      {% if student_record %}
+        <p style="color:var(--muted);font-size:13.5px;">Already admitted as a student.</p>
+        <a href="{% url 'admin_console:student_detail' student_record.pk %}" class="btn btn-outline btn-block mt-1">View Student Record</a>
+      {% elif application.status == 'approved' and can_edit %}
+        <p style="color:var(--muted);font-size:13.5px;">This application is approved and ready to be admitted.</p>
+        <form method="post" action="{% url 'admin_console:admit_as_student' application.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-accent btn-block mt-1"><i class="fa-solid fa-user-graduate"></i> Admit as Student</button>
+        </form>
+      {% else %}
+        <p style="color:var(--muted);font-size:13.5px;">Mark the application "Approved" to admit this applicant as a student.</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Application Fee</h3></div>
+      {% if invoice %}
+        <div class="review-row"><span>Amount</span><span>₦{{ invoice.amount|floatformat:2|intcomma }}</span></div>
+        <div class="review-row"><span>Status</span><span class="badge {% if invoice.is_paid %}badge-success{% else %}badge-danger{% endif %}">{{ invoice.get_status_display }}</span></div>
+      {% else %}
+        <p style="color:var(--muted);font-size:13px;">No invoice generated.</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Status History</h3></div>
+      {% for log in status_logs %}
+      <div class="list-row">
+        <div class="list-row-body">
+          <strong>{{ log.get_stage_display }}</strong>
+          <span>{{ log.note }}{% if log.changed_by %} — {{ log.changed_by.username }}{% endif %}</span>
+        </div>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap;">{{ log.created_at|date:"d M Y H:i" }}</span>
+      </div>
+      {% empty %}
+      <p style="color:var(--muted);font-size:13px;">No status changes logged yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

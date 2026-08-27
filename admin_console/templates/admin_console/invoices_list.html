@@ -1,0 +1,39 @@
+{% extends "admin_console/base.html" %}
+{% load humanize %}
+{% block title %}Invoices — Console{% endblock %}
+{% block page_title %}Invoices{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head"><div><h1>Application Fee Invoices</h1></div></div>
+
+<form method="get" class="filter-bar">
+  <div class="p-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="q" value="{{ q }}" placeholder="Search invoice or application number..."></div>
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All Status</option>
+    {% for value, label in status_choices %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+  {% if q or status %}<a href="{% url 'admin_console:invoices_list' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+</form>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr><th>Invoice No.</th><th>Application</th><th>Amount</th><th>Status</th><th>Generated</th></tr></thead>
+    <tbody>
+      {% for inv in page_obj %}
+      <tr>
+        <td data-label="Invoice No.">{{ inv.invoice_number }}</td>
+        <td data-label="Application"><a href="{% url 'admin_console:application_detail' inv.application.pk %}">{{ inv.application.application_number }} — {{ inv.application.full_name }}</a></td>
+        <td data-label="Amount">₦{{ inv.amount|floatformat:2|intcomma }}</td>
+        <td data-label="Status"><span class="badge {% if inv.is_paid %}badge-success{% elif inv.status == 'waived' %}badge-info{% else %}badge-danger{% endif %}">{{ inv.get_status_display }}</span></td>
+        <td data-label="Generated">{{ inv.generated_at|date:"d M Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" style="text-align:center;color:var(--muted);">No invoices yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include "admin_console/_pagination.html" %}
+{% endblock %}

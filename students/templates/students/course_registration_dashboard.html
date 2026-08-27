@@ -1,0 +1,32 @@
+{% extends "students/base_portal.html" %}
+{% block title %}Course Registration — Student Portal{% endblock %}
+{% block page_title %}Course Registration{% endblock %}
+{% block content %}
+<div class="p-page-head"><div><h1>Course Registration</h1><p>{{ student.programme }} &middot; {{ student.level }}</p></div></div>
+
+<div class="panel">
+  <div class="panel-head"><h3>{{ student.session }} — Current Session</h3></div>
+  {% if not registration_open %}
+    <p style="color:var(--muted);font-size:13.5px;">Course registration is not currently open for your session. Check back once the Academic Office opens it.</p>
+  {% elif not fees_paid %}
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:12px;">Registration is open, but you need to pay your session fees before you can register.</p>
+    <a href="{% url 'students:fees' %}" class="btn btn-primary">Pay Fees</a>
+  {% else %}
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:12px;">{% if already_registered %}You can still add or drop courses while registration stays open.{% else %}You haven't registered for any courses this session yet.{% endif %}</p>
+    <a href="{% url 'students:course_registration_form' %}" class="btn btn-primary"><i class="fa-solid fa-pen"></i> {% if already_registered %}Edit My Registration{% else %}Register Now{% endif %}</a>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Registration History</h3></div>
+  {% for row in session_summaries %}
+  <a href="{% url 'students:course_registration_detail' row.session %}" class="list-row" style="text-decoration:none;color:inherit;">
+    <div class="list-row-time">{{ row.session }}</div>
+    <div class="list-row-body"><strong>{{ row.session }}</strong><span>{{ row.course_count }} course{{ row.course_count|pluralize }} registered</span></div>
+    <i class="fa-solid fa-chevron-right" style="color:var(--muted);"></i>
+  </a>
+  {% empty %}
+  <p style="color:var(--muted);font-size:13.5px;">No course registration history yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

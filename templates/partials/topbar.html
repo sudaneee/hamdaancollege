@@ -1,0 +1,6 @@
+{% if site_settings.show_announcement_bar %}
+<div class="topbar">
+  {{ site_settings.announcement_text }}
+  <a href="{% url 'admissions:apply' %}">{{ site_settings.announcement_link_text }} &rarr;</a>
+</div>
+{% endif %}

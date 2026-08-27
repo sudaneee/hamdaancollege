@@ -1,0 +1,82 @@
+{% extends "portal_base.html" %}
+{% load humanize %}
+{% block title %}My Dashboard — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="p-page-head">
+  <div>
+    <h1>Welcome, <span>{{ request.user.first_name|default:request.user.email }}</span></h1>
+    <p>Application Number: <strong>{{ application.application_number|default:"—" }}</strong></p>
+  </div>
+</div>
+
+{% if not cycle %}
+  <div class="panel" style="text-align:center;">
+    <i class="fa-solid fa-circle-info" style="color:var(--primary);font-size:28px;margin-bottom:10px;"></i>
+    <h3 style="margin-bottom:6px;">No Active Admission Cycle</h3>
+    <p style="color:var(--muted);font-size:13.5px;">There is no admission session currently open. Check back later or contact the Admissions Office.</p>
+  </div>
+
+{% elif payment_required %}
+  <div class="panel">
+    <div class="panel-head"><h3>Application Fee</h3><span class="badge badge-warning">Unpaid</span></div>
+    <div class="review-row"><span>Session</span><span>{{ application.cycle.session }}</span></div>
+    <div class="review-row"><span>Amount Due</span><span>₦{{ invoice.balance|floatformat:2|intcomma }}</span></div>
+    <p style="color:var(--muted);font-size:13.5px;margin:14px 0;">You must pay your application fee before the application form unlocks.</p>
+    <a href="{% url 'payments:apply_payment' %}" class="btn btn-accent btn-lg btn-block"><i class="fa-solid fa-credit-card"></i> Pay Application Fee</a>
+  </div>
+
+{% elif application.is_submitted %}
+  <div class="panel">
+    <div class="panel-head"><h3>Application Status</h3><span class="badge {{ application.status_badge_class }}">{{ application.get_status_display }}</span></div>
+    <div class="status-tracker">
+      <div class="st-fill" style="width:{{ tracker.fill_percent }}%;"></div>
+      {% for step in tracker.steps %}
+      <div class="st-item {% if step.done %}done{% elif step.current %}current{% endif %}">
+        <div class="st-circle">{% if step.done %}<i class="fa-solid fa-check"></i>{% else %}{{ forloop.counter }}{% endif %}</div>
+        <span>{{ step.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="stat-cards" style="grid-template-columns:repeat(3,1fr);">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon green"><i class="fa-solid fa-book"></i></div></div><strong style="font-size:16px;">{{ application.programme.name|default:"—" }}</strong><span class="stat-label">Programme Applied For</span></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon blue"><i class="fa-solid fa-calendar"></i></div></div><strong style="font-size:16px;">{{ application.submitted_at|date:"d M Y" }}</strong><span class="stat-label">Application Date</span></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-card-icon gold"><i class="fa-solid fa-file-shield"></i></div></div><strong style="font-size:16px;">{% if application.documents_verified %}Verified{% else %}Pending Verification{% endif %}</strong><span class="stat-label">Document Status</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Payment Status</h3></div>
+    <div class="review-row"><span>Application Fee</span><span class="badge {% if invoice.is_paid %}badge-success{% else %}badge-danger{% endif %}">{% if invoice.is_paid %}Paid{% else %}Unpaid{% endif %}</span></div>
+    <div class="review-row"><span>Application Number</span><span>{{ application.application_number }}</span></div>
+  </div>
+
+  <div class="panel" style="text-align:center;">
+    <i class="fa-solid fa-circle-info" style="color:var(--primary);font-size:20px;"></i>
+    <p style="color:var(--muted);font-size:13.5px;margin-top:8px;">Your application is being processed by our admissions team. You will be notified through this portal once a decision has been made. Thank you for your interest in {{ site_settings.site_name }}.</p>
+    <a href="{% url 'admissions:apply_success' application.application_number %}" class="btn btn-outline mt-2">View Submission Receipt</a>
+  </div>
+
+{% else %}
+  <div class="panel">
+    <div class="panel-head"><h3>Application Progress</h3><span class="badge badge-info">{{ progress.percentage }}% Complete</span></div>
+    <div class="status-tracker" style="margin:var(--sp-5) 0;">
+      <div class="st-fill" style="width:{{ progress.percentage }}%;"></div>
+      {% for step in progress.steps %}
+      <div class="st-item {% if step.complete %}done{% endif %}">
+        <div class="st-circle">{% if step.complete %}<i class="fa-solid fa-check"></i>{% else %}{{ forloop.counter }}{% endif %}</div>
+        <span>{{ step.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{% url 'admissions:apply_form' %}" class="btn btn-primary btn-lg btn-block">Continue Application <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Application Fee</h3><span class="badge badge-success">Paid</span></div>
+    <div class="review-row"><span>Application Number</span><span>{{ application.application_number }}</span></div>
+    <div class="review-row"><span>Session</span><span>{{ application.cycle.session }}</span></div>
+  </div>
+{% endif %}
+{% endblock %}

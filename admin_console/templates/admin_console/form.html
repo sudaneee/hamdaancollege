@@ -1,0 +1,25 @@
+{% extends "admin_console/base.html" %}
+{% block title %}{% if mode == 'edit' %}Edit{% else %}Add{% endif %} {{ entry.singular }} — Console{% endblock %}
+{% block page_title %}{{ entry.label }}{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{% if mode == 'edit' %}Edit{% else %}Add{% endif %} {{ entry.singular }}</h1></div>
+  <a href="{% url 'admin_console:list' entry.slug %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to {{ entry.label }}</a>
+</div>
+
+<div class="panel" style="max-width:720px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="field {% if field.errors %}error{% endif %}">
+      <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="req">*</span>{% endif %}</label>
+      {{ field }}
+      {% if field.help_text %}<small style="color:var(--muted);display:block;margin-top:4px;">{{ field.help_text }}</small>{% endif %}
+      <span class="field-error">{{ field.errors|join:", " }}</span>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary btn-lg mt-2">{% if mode == 'edit' %}Save Changes{% else %}Create {{ entry.singular }}{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

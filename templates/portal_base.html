@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ site_settings.site_name }}{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230B6B4B%22/><text x=%2250%22 y=%2266%22 font-size=%2246%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-weight=%22bold%22>HIC</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'website/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/animations.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/portal.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/responsive.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="portal-body">
+
+<header class="p-topbar" style="position:sticky;top:0;">
+  <div class="p-topbar-left">
+    <a href="{% url 'website:home' %}" class="brand">
+      <img src="{% if site_settings.logo %}{{ site_settings.logo.url }}{% else %}{% static 'website/logo/logo.svg' %}{% endif %}" class="brand-mark" alt="{{ site_settings.site_name }} crest">
+      <div class="brand-text"><strong>{{ site_settings.site_name }}</strong><span>Applicant Portal</span></div>
+    </a>
+  </div>
+  <div class="p-topbar-right">
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    <div class="p-user-mini" style="padding:4px 10px 4px 4px;border:1px solid var(--border);border-radius:999px;">
+      <div class="p-avatar" style="width:32px;height:32px;font-size:12px;">{{ request.user.first_name|first|upper|default:"A" }}</div>
+      <div><strong style="color:var(--text);">{{ request.user.first_name|default:request.user.email }}</strong></div>
+    </div>
+    <form action="{% url 'accounts:logout' %}" method="post" style="display:contents;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </form>
+  </div>
+</header>
+
+{% if messages %}
+<div class="toast-container">
+  {% for message in messages %}
+  <div class="toast {{ message.tags|default:'success' }}">
+    <i class="fa-solid {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+    <div class="toast-body"><strong>{{ message }}</strong></div>
+    <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<main class="p-content" style="max-width:900px;margin:0 auto;">
+{% block content %}{% endblock %}
+</main>
+
+<script src="{% static 'website/js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
