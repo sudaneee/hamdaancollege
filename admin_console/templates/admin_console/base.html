@@ -93,6 +93,9 @@
       {% if is_full_access or 'fee-structures' in console_visible_slugs %}
       <a href="{% url 'admin_console:list' 'fee-structures' %}" class="{% if active_slug == 'fee-structures' %}active{% endif %}"><i class="fa-solid fa-sack-dollar"></i> Fee Structures</a>
       {% endif %}
+      {% if is_full_access or 'fee-structure-items' in console_visible_slugs %}
+      <a href="{% url 'admin_console:list' 'fee-structure-items' %}" class="{% if active_slug == 'fee-structure-items' %}active{% endif %}"><i class="fa-solid fa-list-ul"></i> Fee Breakdown Items</a>
+      {% endif %}
       {% if is_full_access or 'student-invoices' in console_visible_dedicated %}
       <a href="{% url 'admin_console:student_invoices_list' %}" class="{% if active_slug == 'student-invoices' %}active{% endif %}"><i class="fa-solid fa-file-invoice-dollar"></i> Student Invoices</a>
       {% endif %}

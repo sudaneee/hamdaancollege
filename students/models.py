@@ -316,12 +316,13 @@ class SupportTicket(models.Model):
 
 
 class FeeStructure(models.Model):
+    """One per (programme, session) — a container for the FeeStructureItem
+    rows that actually carry the breakdown. `amount` is deliberately not a
+    stored field: it's the sum of the fixed-amount items, so it can never
+    drift out of sync with the breakdown a student is shown (same
+    computed-not-stored philosophy as Student.gpa/cgpa)."""
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE, related_name='fee_structures')
     session = models.CharField(max_length=20)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    breakdown_note = models.TextField(
-        blank=True, help_text="Shown as-is on the student's Fees page, e.g. one line item per line: 'Tuition: N200,000'.",
-    )
 
     class Meta:
         ordering = ['-session']
@@ -329,6 +330,50 @@ class FeeStructure(models.Model):
 
     def __str__(self):
         return f"{self.programme} — {self.session} (₦{self.amount:,.2f})"
+
+    @property
+    def amount(self):
+        """Total billable amount — the sum of every fixed-price item.
+        Variable items (Hostel, Uniforms, "as applicable" charges, etc.)
+        are shown to the student for transparency but never charged."""
+        total = self.items.filter(amount__isnull=False).aggregate(total=models.Sum('amount'))['total']
+        return total or Decimal('0.00')
+
+    @property
+    def fixed_items(self):
+        return self.items.filter(amount__isnull=False)
+
+    @property
+    def variable_items(self):
+        return self.items.filter(amount__isnull=True)
+
+
+class FeeStructureItem(models.Model):
+    """One line of a fee breakdown, e.g. 'Tuition/School Fees — ₦65,000'.
+    Leave `amount` blank for a variable charge (Hostel, Uniforms, "as
+    applicable" items) — it's shown with `note` instead ('To Be
+    Announced') and never counted in FeeStructure.amount."""
+    fee_structure = models.ForeignKey(FeeStructure, on_delete=models.CASCADE, related_name='items')
+    category = models.CharField(
+        max_length=50, blank=True,
+        help_text="Optional group heading shown above this row, e.g. 'First Semester', 'Second Semester'.",
+    )
+    label = models.CharField(max_length=100, help_text="e.g. Tuition/School Fees")
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Leave blank for a variable charge (shown via the Note field instead, e.g. 'To Be Announced').",
+    )
+    note = models.CharField(
+        max_length=50, blank=True,
+        help_text="Shown instead of an amount when Amount is left blank, e.g. 'To Be Announced' or 'As Applicable'.",
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"{self.label} — {self.fee_structure}"
 
 
 class AcademicSession(models.Model):

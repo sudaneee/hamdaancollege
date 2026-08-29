@@ -37,7 +37,7 @@ ROLE_PERMISSIONS = {
     },
     'bursar': {
         # Finance only — sets fee amounts, monitors/reconciles what's been paid.
-        'manage': {'fee-structures'},
+        'manage': {'fee-structures', 'fee-structure-items'},
         'view': set(),
         'dedicated_view': {'students', 'invoices', 'payments', 'student-invoices', 'student-payments'},
         'dedicated_manage': set(),

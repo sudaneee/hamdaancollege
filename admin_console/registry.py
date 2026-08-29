@@ -36,7 +36,7 @@ def _build_registry():
     from admissions.models import AdmissionCycle
     from students.models import (
         AcademicSession, Announcement, Assignment, AttendanceRecord, Course, CourseRegistration,
-        FeeStructure, Result, TimetableEntry,
+        FeeStructure, FeeStructureItem, Result, TimetableEntry,
     )
     from website.models import (
         ContactMessage, CoreValue, Department, Event, Facility, GalleryCategory, GalleryImage,
@@ -224,11 +224,25 @@ def _build_registry():
             form_fields=['programme', 'day', 'start_time', 'course', 'lecturer_name', 'venue'],
         ),
         ManagedModel(
+            # amount isn't a real field — it's the sum of this structure's
+            # FeeStructureItem rows (see students.models.FeeStructure.amount),
+            # so it's list-only here; the breakdown itself is managed via
+            # the 'fee-structure-items' entry below.
             slug='fee-structures', model=FeeStructure, label='Fee Structures', singular='Fee Structure',
             icon='fa-solid fa-sack-dollar', category='Student Records',
-            list_fields=[('programme', 'Programme'), ('session', 'Session'), ('amount', 'Amount')],
+            list_fields=[('programme', 'Programme'), ('session', 'Session'), ('amount', 'Total Amount')],
             filter_fields=[('programme', 'Programme'), ('session', 'Session')],
-            form_fields=['programme', 'session', 'amount', 'breakdown_note'],
+            form_fields=['programme', 'session'],
+        ),
+        ManagedModel(
+            slug='fee-structure-items', model=FeeStructureItem, label='Fee Breakdown Items', singular='Fee Item',
+            icon='fa-solid fa-list-ul', category='Student Records',
+            list_fields=[('fee_structure', 'Fee Structure'), ('category', 'Category'), ('label', 'Description'),
+                         ('amount', 'Amount'), ('note', 'Note'), ('order', 'Order')],
+            search_fields=['label', 'category'],
+            filter_fields=[('fee_structure', 'Fee Structure')],
+            form_fields=['fee_structure', 'category', 'label', 'amount', 'note', 'order'],
+            ordering='order',
         ),
         ManagedModel(
             slug='student-announcements', model=Announcement, label='Announcements', singular='Announcement',
