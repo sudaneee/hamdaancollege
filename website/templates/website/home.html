@@ -178,7 +178,6 @@
   </div>
 </section>
 
-{% if open_jobs %}
 <section class="section section-alt">
   <div class="container">
     <div class="section-head reveal">
@@ -186,6 +185,7 @@
       <h2>Join Our Team</h2>
       <p>Current job openings at {{ site_settings.site_short_name }} — see something that fits?</p>
     </div>
+    {% if open_jobs %}
     <div class="dept-grid" style="grid-template-columns:repeat(3,1fr);">
       {% for job in open_jobs %}
       <a href="{{ job.get_absolute_url }}" class="dept-card reveal" style="text-decoration:none;color:inherit;">
@@ -199,10 +199,12 @@
       </a>
       {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state reveal"><i class="fa-solid fa-briefcase"></i><h4>No openings right now</h4><p>Check back soon — new positions are posted here as they become available.</p></div>
+    {% endif %}
     <div class="text-center mt-3"><a href="{% url 'website:careers_list' %}" class="btn btn-primary btn-lg">View All Openings</a></div>
   </div>
 </section>
-{% endif %}
 
 <section class="section section-alt">
   <div class="container">
