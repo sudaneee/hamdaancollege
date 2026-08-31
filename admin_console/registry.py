@@ -40,7 +40,7 @@ def _build_registry():
     )
     from website.models import (
         ContactMessage, CoreValue, Department, Event, Facility, GalleryCategory, GalleryImage,
-        NewsArticle, Programme, Statistic, StudentLifeActivity, WhyChooseItem,
+        JobPosting, NewsArticle, Programme, Statistic, StudentLifeActivity, WhyChooseItem,
     )
 
     entries = [
@@ -263,6 +263,20 @@ def _build_registry():
             filter_fields=[('role', 'Role')],
             form_fields=['user', 'role'],
             ordering='user__username',
+        ),
+        ManagedModel(
+            # JobApplication (the resumes coming in against these postings)
+            # is deliberately NOT generic — it needs a resume download link
+            # and a status-change action, so it's a dedicated view instead
+            # (admin_console/views.py's job_applications_list/detail).
+            slug='job-postings', model=JobPosting, label='Job Postings', singular='Job Posting',
+            icon='fa-solid fa-briefcase', category='Careers',
+            list_fields=[('title', 'Title'), ('department', 'Department'), ('employment_type', 'Type'),
+                         ('deadline', 'Deadline'), ('is_open', 'Open'), ('is_active', 'Active')],
+            search_fields=['title', 'department'],
+            filter_fields=[('employment_type', 'Type'), ('is_active', 'Active')],
+            form_fields=['title', 'department', 'location', 'employment_type', 'description',
+                         'requirements', 'deadline', 'is_active'],
         ),
     ]
     return {entry.slug: entry for entry in entries}

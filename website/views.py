@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 
-from .forms import ContactForm
+from .forms import ContactForm, JobApplicationForm
 from .models import (
     AboutContent, Statistic, WhyChooseItem, CoreValue, Department, Programme,
     Facility, StudentLifeActivity, NewsArticle, Event, GalleryCategory, GalleryImage,
+    JobPosting,
 )
 
 
@@ -132,6 +134,35 @@ def gallery(request):
         'images': images,
         'active_category': category_id,
     })
+
+
+def careers_list(request):
+    today = timezone.now().date()
+    jobs = JobPosting.objects.filter(is_active=True, deadline__gte=today)
+    return render(request, 'website/careers.html', {'page': 'careers', 'jobs': jobs})
+
+
+def job_detail(request, slug):
+    # Reachable by direct link even once closed, so an applicant who had the
+    # link mid-application isn't just met with a 404 — is_open just turns
+    # off the Apply form below (see JobPosting.is_open).
+    job = get_object_or_404(JobPosting, slug=slug)
+
+    if request.method == 'POST':
+        if not job.is_open:
+            messages.error(request, 'Applications for this position are closed.')
+            return redirect('website:job_detail', slug=slug)
+        form = JobApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.save()
+            messages.success(request, "Your application has been submitted. Thank you — we'll be in touch.")
+            return redirect('website:job_detail', slug=slug)
+    else:
+        form = JobApplicationForm()
+
+    return render(request, 'website/job_detail.html', {'page': 'careers', 'job': job, 'form': form})
 
 
 def contact(request):

@@ -818,3 +818,56 @@ def gradesheet_publish(request, session, course_id):
     else:
         messages.info(request, 'Nothing to publish — every entered result is already published.')
     return redirect('admin_console:gradesheet_detail', session=session, course_id=course_id)
+
+
+# ── Job Applications — dedicated: needs a resume download link and a
+# status-change action, so it's not the plain generic CRUD scaffold
+# (Job Postings themselves ARE generic — see the 'job-postings' registry
+# entry). Full-access only for now — no existing role owns HR/careers. ──────
+
+@staff_member_required
+@full_access_required
+def job_applications_list(request):
+    from website.models import JobApplication, JobPosting
+
+    qs = JobApplication.objects.select_related('job').order_by('-submitted_at')
+    q = request.GET.get('q', '').strip()
+    if q:
+        qs = qs.filter(Q(full_name__icontains=q) | Q(email__icontains=q) | Q(job__title__icontains=q))
+    status = request.GET.get('status', '')
+    if status:
+        qs = qs.filter(status=status)
+    job_id = request.GET.get('job', '')
+    if job_id:
+        qs = qs.filter(job_id=job_id)
+
+    paginator = Paginator(qs, 25)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    return render(request, 'admin_console/job_applications_list.html', {
+        'page_obj': page_obj, 'q': q, 'status': status, 'job_id': job_id,
+        'status_choices': JobApplication.STATUS_CHOICES, 'jobs': JobPosting.objects.all(),
+        'active_nav': 'console', 'active_slug': 'job-applications',
+        'querystring': querystring_without_page(request),
+    })
+
+
+@staff_member_required
+@full_access_required
+def job_application_detail(request, pk):
+    from website.models import JobApplication
+
+    application = get_object_or_404(JobApplication, pk=pk)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in dict(JobApplication.STATUS_CHOICES):
+            application.status = new_status
+            application.save(update_fields=['status'])
+            messages.success(request, f'Application marked as {application.get_status_display()}.')
+            return redirect('admin_console:job_application_detail', pk=pk)
+        messages.error(request, 'Invalid status.')
+
+    return render(request, 'admin_console/job_application_detail.html', {
+        'application': application, 'status_choices': JobApplication.STATUS_CHOICES,
+        'active_nav': 'console', 'active_slug': 'job-applications',
+    })

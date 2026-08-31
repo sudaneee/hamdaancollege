@@ -384,3 +384,75 @@ class ContactMessage(models.Model):
 
 # Application/Application-fee moved to the `admissions` and `payments` apps
 # (see admissions.models.Application, payments.models.ApplicationInvoice).
+
+
+# =========================================================
+# CAREERS
+# =========================================================
+class JobPosting(models.Model):
+    EMPLOYMENT_TYPE_CHOICES = [
+        ('Full-time', 'Full-time'), ('Part-time', 'Part-time'),
+        ('Contract', 'Contract'), ('Internship', 'Internship'),
+    ]
+
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    department = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=150, default='Zaria, Kaduna State')
+    employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPE_CHOICES, default='Full-time')
+    description = CKEditor5Field(config_name='default')
+    requirements = CKEditor5Field(config_name='default', blank=True)
+    deadline = models.DateField(
+        help_text="Applications close at the end of this date — the posting is then automatically "
+                   "hidden from the public Careers page, no manual step needed.",
+    )
+    is_active = models.BooleanField(default=True, help_text="Uncheck to close a posting early, before its deadline.")
+    posted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-posted_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.title)
+            slug, i = base, 1
+            while JobPosting.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                i += 1
+                slug = f"{base}-{i}"
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    @property
+    def is_open(self):
+        """Whether this posting still accepts applications — the single
+        source of truth both the public list (which just filters on it)
+        and the detail page's Apply form (which checks it directly) use."""
+        return self.is_active and self.deadline >= timezone.now().date()
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('website:job_detail', args=[self.slug])
+
+
+class JobApplication(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'New'), ('shortlisted', 'Shortlisted'), ('rejected', 'Rejected'), ('hired', 'Hired'),
+    ]
+
+    job = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applications')
+    full_name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30)
+    cover_letter = models.TextField(blank=True)
+    resume = models.FileField(upload_to='job_applications/')
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='new')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"{self.full_name} — {self.job.title}"

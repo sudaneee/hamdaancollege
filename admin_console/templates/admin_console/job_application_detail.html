@@ -1,0 +1,61 @@
+{% extends "admin_console/base.html" %}
+{% block title %}{{ application.full_name }} — Console{% endblock %}
+{% block page_title %}Application Detail{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head">
+  <div><h1>{{ application.full_name }}</h1><p>Applying for {{ application.job.title }}</p></div>
+  <a href="{% url 'admin_console:job_applications_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Applications</a>
+</div>
+
+<div class="p-grid-2">
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>Applicant Details</h3></div>
+      <div class="review-row"><span>Full Name</span><span>{{ application.full_name }}</span></div>
+      <div class="review-row"><span>Email</span><span>{{ application.email }}</span></div>
+      <div class="review-row"><span>Phone</span><span>{{ application.phone }}</span></div>
+      <div class="review-row"><span>Applied</span><span>{{ application.submitted_at|date:"d M Y H:i" }}</span></div>
+      {% if application.resume %}
+      <a href="{{ application.resume.url }}" target="_blank" class="btn btn-outline btn-block mt-2"><i class="fa-solid fa-file-arrow-down"></i> Download Resume / CV</a>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Cover Letter</h3></div>
+      {% if application.cover_letter %}
+      <p style="color:var(--text-soft);font-size:14.5px;line-height:1.7;white-space:pre-wrap;">{{ application.cover_letter }}</p>
+      {% else %}
+      <p style="color:var(--muted);font-size:13.5px;">No cover letter submitted.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel-head"><h3>Status</h3><span class="badge {% if application.status == 'hired' %}badge-success{% elif application.status == 'rejected' %}badge-danger{% elif application.status == 'shortlisted' %}badge-warning{% else %}badge-muted{% endif %}">{{ application.get_status_display }}</span></div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="field">
+          <label>Change Status</label>
+          <select name="status">
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if application.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update Status</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Position</h3></div>
+      <div class="review-row"><span>Title</span><span>{{ application.job.title }}</span></div>
+      <div class="review-row"><span>Department</span><span>{{ application.job.department|default:"—" }}</span></div>
+      <div class="review-row"><span>Type</span><span>{{ application.job.get_employment_type_display }}</span></div>
+      <div class="review-row"><span>Deadline</span><span>{{ application.job.deadline|date:"d M Y" }}</span></div>
+      <a href="{% url 'admin_console:edit' 'job-postings' application.job.pk %}" class="btn btn-outline btn-block mt-1">View / Edit Posting</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

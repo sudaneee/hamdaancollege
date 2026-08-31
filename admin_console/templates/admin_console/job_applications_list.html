@@ -1,0 +1,46 @@
+{% extends "admin_console/base.html" %}
+{% block title %}Job Applications — Console{% endblock %}
+{% block page_title %}Job Applications{% endblock %}
+
+{% block console_content %}
+<div class="p-page-head"><div><h1>Job Applications</h1></div></div>
+
+<form method="get" class="filter-bar">
+  <div class="p-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="q" value="{{ q }}" placeholder="Search name, email, job..."></div>
+  <select name="job" onchange="this.form.submit()">
+    <option value="">All Postings</option>
+    {% for j in jobs %}<option value="{{ j.pk }}" {% if job_id == j.pk|stringformat:"s" %}selected{% endif %}>{{ j.title }}</option>{% endfor %}
+  </select>
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All Status</option>
+    {% for value, label in status_choices %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+  {% if q or status or job_id %}<a href="{% url 'admin_console:job_applications_list' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+</form>
+
+<div class="table-wrap responsive-cards">
+  <table class="data-table">
+    <thead><tr><th>Applicant</th><th>Job</th><th>Email</th><th>Phone</th><th>Status</th><th>Applied</th><th></th></tr></thead>
+    <tbody>
+      {% for a in page_obj %}
+      <tr>
+        <td data-label="Applicant"><strong>{{ a.full_name }}</strong></td>
+        <td data-label="Job">{{ a.job.title }}</td>
+        <td data-label="Email">{{ a.email }}</td>
+        <td data-label="Phone">{{ a.phone }}</td>
+        <td data-label="Status">
+          <span class="badge {% if a.status == 'hired' %}badge-success{% elif a.status == 'rejected' %}badge-danger{% elif a.status == 'shortlisted' %}badge-warning{% else %}badge-muted{% endif %}">{{ a.get_status_display }}</span>
+        </td>
+        <td data-label="Applied">{{ a.submitted_at|date:"d M Y" }}</td>
+        <td data-label="Actions"><a href="{% url 'admin_console:job_application_detail' a.pk %}" class="btn btn-outline btn-sm">Review</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center;color:var(--muted);">No applications yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include "admin_console/_pagination.html" %}
+{% endblock %}

@@ -43,6 +43,9 @@ urlpatterns = [
     path('users/<int:pk>/toggle-active/', views.user_toggle_active, name='user_toggle_active'),
     path('users/<int:pk>/toggle-staff/', views.user_toggle_staff, name='user_toggle_staff'),
 
+    path('job-applications/', views.job_applications_list, name='job_applications_list'),
+    path('job-applications/<int:pk>/', views.job_application_detail, name='job_application_detail'),
+
     path('site-settings/', views.site_settings_edit, name='site_settings'),
     path('about-content/', views.about_content_edit, name='about_content'),
 

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Careers — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{% url 'website:home' %}">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span>Careers</span></div>
+    <h1>Careers at {{ site_settings.site_short_name }}</h1>
+    <p>Join our team — explore current openings below.</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="dept-grid" style="grid-template-columns:repeat(2,1fr);">
+      {% for job in jobs %}
+      <a href="{{ job.get_absolute_url }}" class="dept-card" style="text-decoration:none;color:inherit;">
+        <div class="feature-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <h3>{{ job.title }}</h3>
+        <p style="color:var(--muted);font-size:13.5px;margin-bottom:8px;">
+          {% if job.department %}{{ job.department }} &middot; {% endif %}{{ job.location }}
+        </p>
+        <ul>
+          <li>{{ job.get_employment_type_display }}</li>
+          <li>Apply by {{ job.deadline|date:"j F Y" }}</li>
+        </ul>
+        <span>View &amp; Apply <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
+      {% empty %}
+      <div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-briefcase"></i><h4>No openings right now</h4><p>Check back soon — new positions are posted here as they become available.</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
