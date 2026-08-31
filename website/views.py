@@ -24,6 +24,7 @@ def home(request):
         'news_items': NewsArticle.objects.filter(status='published')[:3],
         'core_values': CoreValue.objects.all()[:6],
         'about_content': AboutContent.load(),
+        'open_jobs': JobPosting.objects.filter(is_active=True, deadline__gte=timezone.now().date())[:3],
     }
     return render(request, 'website/home.html', context)
 
