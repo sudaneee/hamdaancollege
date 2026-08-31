@@ -21,6 +21,7 @@ def home(request):
         'featured_programme': featured,
         'news_items': NewsArticle.objects.filter(status='published')[:3],
         'core_values': CoreValue.objects.all()[:6],
+        'about_content': AboutContent.load(),
     }
     return render(request, 'website/home.html', context)
 

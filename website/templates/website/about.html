@@ -60,6 +60,9 @@
       </div>
       <div>
         <blockquote>{{ about_content.principal_message|safe }}</blockquote>
+        {% if about_content.principal_bio %}
+        <div style="color:var(--muted);font-size:14.5px;line-height:1.7;margin-bottom:var(--sp-3);">{{ about_content.principal_bio|safe }}</div>
+        {% endif %}
         <strong>{{ about_content.principal_name }}</strong>
         <span>{{ about_content.principal_title }}, {{ site_settings.site_name }}</span>
       </div>

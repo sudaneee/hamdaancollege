@@ -156,6 +156,28 @@
   </div>
 </section>
 
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Leadership</span>
+      <h2>Meet Our Founder &amp; CEO</h2>
+    </div>
+    <div class="principal-card reveal">
+      <div class="principal-photo">
+        <img src="{% if about_content.principal_photo %}{{ about_content.principal_photo.url }}{% else %}https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=500&q=80{% endif %}" alt="{{ about_content.principal_name }}">
+      </div>
+      <div>
+        <blockquote>{{ about_content.principal_message|safe }}</blockquote>
+        {% if about_content.principal_bio %}
+        <div style="color:var(--muted);font-size:14.5px;line-height:1.7;margin-bottom:var(--sp-3);">{{ about_content.principal_bio|safe }}</div>
+        {% endif %}
+        <strong>{{ about_content.principal_name }}</strong>
+        <span>{{ about_content.principal_title }}, {{ site_settings.site_name }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section section-alt">
   <div class="container">
     <div class="section-head reveal">

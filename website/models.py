@@ -156,12 +156,18 @@ class AboutContent(SingletonModel):
 
     principal_name = models.CharField(max_length=100, default="Dr. Amina Yusuf")
     principal_title = models.CharField(max_length=100, default="Principal / Chief Executive")
-    principal_message = CKEditor5Field(config_name='default', 
+    principal_message = CKEditor5Field(config_name='default',
         default="<p>At Hamdaan International College, we believe education is the most powerful tool for "
                 "transforming lives and communities. Our commitment goes beyond the classroom — we are building a "
                 "generation of health, science and technology professionals who are skilled, compassionate and "
                 "ready to serve.</p>")
     principal_photo = models.ImageField(upload_to='about/', blank=True, null=True)
+    principal_bio = CKEditor5Field(
+        config_name='default', blank=True,
+        help_text="A short biography — shown under the welcome message on the About page and the homepage's "
+                   "Founder & CEO section.",
+        default="",
+    )
 
     class Meta:
         verbose_name = "About Page Content"
