@@ -83,8 +83,10 @@
       {% if is_full_access or 'attendance-records' in console_visible_slugs %}
       <a href="{% url 'admin_console:list' 'attendance-records' %}" class="{% if active_slug == 'attendance-records' %}active{% endif %}"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
       {% endif %}
-      {% if is_full_access %}
+      {% if is_full_access or 'assignments' in console_visible_slugs %}
       <a href="{% url 'admin_console:list' 'assignments' %}" class="{% if active_slug == 'assignments' %}active{% endif %}"><i class="fa-solid fa-clipboard-list"></i> Assignments</a>
+      {% endif %}
+      {% if is_full_access %}
       <a href="{% url 'admin_console:submissions_list' %}" class="{% if active_slug == 'submissions' %}active{% endif %}"><i class="fa-solid fa-file-arrow-up"></i> Assignment Submissions</a>
       {% endif %}
       {% if is_full_access or 'timetable' in console_visible_slugs %}

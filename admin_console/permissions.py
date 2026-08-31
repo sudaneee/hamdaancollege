@@ -42,6 +42,20 @@ ROLE_PERMISSIONS = {
         'dedicated_view': {'students', 'invoices', 'payments', 'student-invoices', 'student-payments'},
         'dedicated_manage': set(),
     },
+    'academic_secretary': {
+        # Day-to-day academic administration — scheduling/coordination
+        # (Timetable, Assignments, Announcements, Courses) plus a share of
+        # Registrar's academic-records territory (Sessions, Programmes,
+        # Departments). Not admissions or student-record edits — that stays
+        # Registrar's own dedicated_manage.
+        'manage': {
+            'timetable', 'assignments', 'student-announcements', 'courses',
+            'academic-sessions', 'programmes', 'departments',
+        },
+        'view': {'course-registrations', 'results', 'attendance-records'},
+        'dedicated_view': {'students'},
+        'dedicated_manage': set(),
+    },
 }
 
 

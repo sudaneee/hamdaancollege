@@ -94,6 +94,7 @@ class StaffProfile(models.Model):
         ('exam_officer', 'Exam Officer'),
         ('registrar', 'Registrar'),
         ('bursar', 'Bursar'),
+        ('academic_secretary', 'Academic Secretary'),
     ]
 
     user = models.OneToOneField(
