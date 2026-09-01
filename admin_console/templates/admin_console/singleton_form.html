@@ -6,6 +6,12 @@
 <div class="p-page-head"><div><h1>{{ title }}</h1></div></div>
 
 <div class="panel" style="max-width:760px;">
+  {% if form.errors %}
+  <div class="toast error" style="margin-bottom:16px;">
+    <i class="fa-solid fa-circle-xmark"></i>
+    <div class="toast-body"><strong>Not saved — please fix the {{ form.errors|length }} field{{ form.errors|length|pluralize }} highlighted below.</strong></div>
+  </div>
+  {% endif %}
   <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {% for field in form %}

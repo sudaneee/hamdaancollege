@@ -35,10 +35,10 @@
         <span>{{ site_settings.address_line }}</span>
       </div>
       <div class="social-row">
-        <a href="{{ site_settings.facebook_url }}" class="icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="{{ site_settings.instagram_url }}" class="icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="{{ site_settings.twitter_url }}" class="icon-btn" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="{{ site_settings.linkedin_url }}" class="icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="{{ site_settings.facebook_url|default:'#' }}" class="icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="{{ site_settings.instagram_url|default:'#' }}" class="icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="{{ site_settings.twitter_url|default:'#' }}" class="icon-btn" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="{{ site_settings.linkedin_url|default:'#' }}" class="icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
       </div>
     </div>
 

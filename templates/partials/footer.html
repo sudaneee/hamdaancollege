@@ -18,10 +18,10 @@
         </a>
         <p>{{ site_settings.footer_about }}</p>
         <div class="footer-social">
-          <a href="{{ site_settings.facebook_url }}" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="{{ site_settings.instagram_url }}" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="{{ site_settings.twitter_url }}" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-          <a href="{{ site_settings.linkedin_url }}" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="{{ site_settings.facebook_url|default:'#' }}" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="{{ site_settings.instagram_url|default:'#' }}" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="{{ site_settings.twitter_url|default:'#' }}" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="{{ site_settings.linkedin_url|default:'#' }}" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
         </div>
       </div>
       <div>

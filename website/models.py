@@ -69,10 +69,15 @@ class SiteSettings(SingletonModel):
     email = models.EmailField(default="hamdaanglobalmail@gmail.com")
     office_hours = models.CharField(max_length=200, default="Monday – Friday: 8:00 AM – 5:00 PM · Saturday: 9:00 AM – 1:00 PM")
 
-    facebook_url = models.URLField(blank=True, default="#")
-    instagram_url = models.URLField(blank=True, default="#")
-    twitter_url = models.URLField(blank=True, default="#")
-    linkedin_url = models.URLField(blank=True, default="#")
+    # blank, not "#" — URLField validates its value even when the field
+    # is only blank=True, so a placeholder like "#" fails validation on
+    # every future save of this form until the field is filled with a
+    # real URL or cleared. Templates fall back to "#" for display instead
+    # (see partials/footer.html / website/contact.html).
+    facebook_url = models.URLField(blank=True, default="")
+    instagram_url = models.URLField(blank=True, default="")
+    twitter_url = models.URLField(blank=True, default="")
+    linkedin_url = models.URLField(blank=True, default="")
     whatsapp_number = models.CharField(max_length=30, blank=True, default="2349063447124",
                                         help_text="International format, no plus sign — used for the floating WhatsApp button.")
 
