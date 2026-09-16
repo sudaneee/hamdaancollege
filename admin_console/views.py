@@ -246,7 +246,13 @@ def generic_delete(request, slug, pk):
 @staff_member_required
 @dedicated_required('applications')
 def applications_list(request):
-    qs = Application.objects.filter(is_submitted=True).select_related('programme', 'cycle').order_by('-submitted_at')
+    # Shows every application that's been started, not just submitted ones —
+    # an applicant who pays the fee but never finishes/submits the form used
+    # to be completely invisible here (is_submitted only flips true once the
+    # form is actually submitted), which meant staff had no way to even see,
+    # let alone follow up with, someone stuck mid-application. `submission`
+    # lets staff narrow back down to just the ones ready for review.
+    qs = Application.objects.select_related('programme', 'cycle', 'invoice').order_by('-created_at')
     q = request.GET.get('q', '').strip()
     if q:
         qs = qs.filter(
@@ -259,12 +265,17 @@ def applications_list(request):
     cycle_id = request.GET.get('cycle', '')
     if cycle_id:
         qs = qs.filter(cycle_id=cycle_id)
+    submission = request.GET.get('submission', '')
+    if submission == 'submitted':
+        qs = qs.filter(is_submitted=True)
+    elif submission == 'draft':
+        qs = qs.filter(is_submitted=False)
 
     paginator = Paginator(qs, 25)
     page_obj = paginator.get_page(request.GET.get('page'))
 
     return render(request, 'admin_console/applications.html', {
-        'page_obj': page_obj, 'q': q, 'status': status, 'cycle_id': cycle_id,
+        'page_obj': page_obj, 'q': q, 'status': status, 'cycle_id': cycle_id, 'submission': submission,
         'status_choices': STATUS_CHOICES, 'cycles': AdmissionCycle.objects.all(),
         'active_nav': 'console', 'active_slug': 'applications',
         'querystring': querystring_without_page(request),
@@ -274,8 +285,13 @@ def applications_list(request):
 @staff_member_required
 @dedicated_required('applications')
 def application_detail(request, pk):
-    application = get_object_or_404(Application, pk=pk, is_submitted=True)
-    can_edit = permissions.can_manage_dedicated(request.user, 'applications')
+    # No is_submitted filter here — an unsubmitted (draft) application must
+    # still be viewable so staff can see what an applicant has filled in so
+    # far and their invoice/payment status (e.g. to follow up with someone
+    # who paid but never finished). Status changes and admitting as a
+    # student stay gated to submitted applications only, in the template.
+    application = get_object_or_404(Application, pk=pk)
+    can_edit = permissions.can_manage_dedicated(request.user, 'applications') and application.is_submitted
     if request.method == 'POST' and can_edit:
         new_status = request.POST.get('status')
         if new_status in dict(STATUS_CHOICES):

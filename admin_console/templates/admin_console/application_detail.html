@@ -5,9 +5,20 @@
 
 {% block console_content %}
 <div class="p-page-head">
-  <div><h1>{{ application.full_name }}</h1><p>{{ application.application_number }} — {{ application.cycle.session }}</p></div>
+  <div><h1>{{ application.full_name|default:application.applicant.email }}</h1><p>{{ application.application_number }} — {{ application.cycle.session }}</p></div>
   <a href="{% url 'admin_console:applications_list' %}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Applications</a>
 </div>
+
+{% if not application.is_submitted %}
+<div class="panel" style="border-left:4px solid var(--warning);">
+  <strong style="display:block;margin-bottom:4px;">Draft — not yet submitted</strong>
+  <p style="color:var(--muted);font-size:13.5px;margin:0;">
+    This applicant hasn't completed and submitted the form yet, so review actions (status changes, admitting as a
+    student) aren't available until they do. Whatever they've filled in so far, and their fee payment status, are
+    shown below.
+  </p>
+</div>
+{% endif %}
 
 <div class="p-grid-2">
   <div>

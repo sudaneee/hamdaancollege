@@ -10,6 +10,11 @@
     <i class="fa-solid fa-magnifying-glass"></i>
     <input type="text" name="q" value="{{ q }}" placeholder="Search by name, number, email, phone...">
   </div>
+  <select name="submission" onchange="this.form.submit()">
+    <option value="">All (Submitted + Draft)</option>
+    <option value="submitted" {% if submission == 'submitted' %}selected{% endif %}>Submitted Only</option>
+    <option value="draft" {% if submission == 'draft' %}selected{% endif %}>Draft Only (not yet submitted)</option>
+  </select>
   <select name="status" onchange="this.form.submit()">
     <option value="">All Status</option>
     {% for value, label in status_choices %}
@@ -23,12 +28,12 @@
     {% endfor %}
   </select>
   <button type="submit" class="btn btn-outline btn-sm">Filter</button>
-  {% if q or status or cycle_id %}<a href="{% url 'admin_console:applications_list' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+  {% if q or status or cycle_id or submission %}<a href="{% url 'admin_console:applications_list' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
 </form>
 
 <div class="table-wrap responsive-cards">
   <table class="data-table">
-    <thead><tr><th>Application No.</th><th>Name</th><th>Programme</th><th>Session</th><th>Status</th><th>Submitted</th><th></th></tr></thead>
+    <thead><tr><th>Application No.</th><th>Name</th><th>Programme</th><th>Session</th><th>Status</th><th>Fee Paid</th><th>Started / Submitted</th><th></th></tr></thead>
     <tbody>
       {% for app in page_obj %}
       <tr>
@@ -36,12 +41,21 @@
         <td data-label="Name">{{ app.full_name|default:app.applicant.email }}</td>
         <td data-label="Programme">{{ app.programme.name|default:"—" }}</td>
         <td data-label="Session">{{ app.cycle.session }}</td>
-        <td data-label="Status"><span class="badge {{ app.status_badge_class }}">{{ app.get_status_display }}</span></td>
-        <td data-label="Submitted">{{ app.submitted_at|date:"d M Y" }}</td>
+        <td data-label="Status">
+          {% if app.is_submitted %}
+          <span class="badge {{ app.status_badge_class }}">{{ app.get_status_display }}</span>
+          {% else %}
+          <span class="badge badge-muted">Draft</span>
+          {% endif %}
+        </td>
+        <td data-label="Fee Paid">
+          {% if app.invoice.is_paid %}<span class="badge badge-success">Paid</span>{% else %}<span class="badge badge-danger">Unpaid</span>{% endif %}
+        </td>
+        <td data-label="Started / Submitted">{% if app.submitted_at %}{{ app.submitted_at|date:"d M Y" }}{% else %}{{ app.created_at|date:"d M Y" }} (started){% endif %}</td>
         <td data-label="Actions"><a href="{% url 'admin_console:application_detail' app.pk %}" class="btn btn-outline btn-sm">View</a></td>
       </tr>
       {% empty %}
-      <tr><td colspan="7" style="text-align:center;color:var(--muted);">No applications submitted yet.</td></tr>
+      <tr><td colspan="8" style="text-align:center;color:var(--muted);">No applications yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>
