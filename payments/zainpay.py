@@ -35,6 +35,7 @@ from decimal import Decimal
 
 import requests
 from django.conf import settings
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -224,12 +225,20 @@ def process_payment(payment) -> dict:
         if not payment.receipt_number:
             from payments.models import generate_receipt_number
             payment.receipt_number = generate_receipt_number()
-    payment.save()
+
+    # Payment + invoice are saved together — without this, a payment could
+    # commit as 'success' while the invoice status update never lands (e.g.
+    # the process dies between the two .save() calls), leaving the invoice
+    # visibly "Unpaid" in the console even though the payment succeeded and
+    # invoice.is_paid (computed) would actually already say otherwise.
+    with transaction.atomic():
+        payment.save()
+        if new_status == 'success' and changed:
+            invoice = payment.invoice
+            invoice.status = 'paid' if invoice.is_paid else 'partial'
+            invoice.save(update_fields=['status'])
 
     if new_status == 'success' and changed:
-        invoice = payment.invoice
-        invoice.status = 'paid' if invoice.is_paid else 'partial'
-        invoice.save(update_fields=['status'])
         _send_payment_confirmation_email(payment)
 
     return {'status': new_status, 'changed': changed}
